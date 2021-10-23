@@ -27,7 +27,6 @@ class LineParser():
     def __get_regs_gpr_gpr(self):
         if "$" not in self.tokenized_line[0] and "$" not in self.tokenized_line[2] and "$" not in self.tokenized_line[4]:
             raise InvalidOperation("expected $Rd = $Rs1 [operation] $Rs2")
-        self.Rd = self.tokenized_line.
 
     def get_op_info(self) -> Tuple[int, str, operations.OpTypes]:
         for op in operations.Operations.__members__.values():
