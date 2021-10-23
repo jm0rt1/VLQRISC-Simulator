@@ -12,9 +12,9 @@ class TestOperations(unittest.TestCase):
     def test_unique_opcodes(self):
         op: operations.Operation
 
-        opcodes_used: list = []
+        opcodes_used: list[int] = []
 
-        for op in operations.Operations:
+        for op in operations.Operations.__members__.values():
             opcodes_used.append(op.value.op_code)
 
         if len(opcodes_used) > len(set(opcodes_used)):
