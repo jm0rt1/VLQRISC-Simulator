@@ -1,0 +1,7 @@
+autopep8==1.5.7
+numpy==1.21.3
+Pillow==8.4.0
+pycodestyle==2.8.0
+six==1.16.0
+toml==0.10.2
+wxPython==4.1.1
