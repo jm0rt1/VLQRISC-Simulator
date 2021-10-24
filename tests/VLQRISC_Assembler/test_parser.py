@@ -6,7 +6,7 @@ import src.VLQRISC_Assembler.operations as operations
 class TestLineParser(unittest.TestCase):
     def test_ADD_REGS(self):
 
-        line_parser = parser.LineParser("$s1=   $s2+    $s1")
+        line_parser = parser.LineParser("$s1        =$s2+$s1")
         line_data = line_parser.parse()
 
         # test tokenization
@@ -25,7 +25,7 @@ class TestLineParser(unittest.TestCase):
             found_opcode_int, operations.Operations.ADD_REGS.value.op_code)
         self.assertEquals(found_opcode_str,
                           operations.Operations.ADD_REGS.value.op_code_str)
-
+        #############
         line_parser = parser.LineParser("$s4=$s2+$s1")
         line_data = line_parser.parse()
         # test tokenization

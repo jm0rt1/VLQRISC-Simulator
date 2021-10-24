@@ -10,11 +10,11 @@ class TestOperations(unittest.TestCase):
             raise Exception(f"Not 5 bits: \n\n{add_reg_str}\n")
 
     def test_unique_opcodes(self):
-        op: operations.Operation
+        op: operations.Operations
 
         opcodes_used: list[int] = []
 
-        for op in operations.Operations.__members__.values():
+        for op in operations.Operations:
             opcodes_used.append(op.value.op_code)
 
         if len(opcodes_used) > len(set(opcodes_used)):
