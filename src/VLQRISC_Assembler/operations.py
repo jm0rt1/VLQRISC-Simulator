@@ -38,12 +38,15 @@ class Operations(enum.Enum):
                          OpTypes.GPR_GPR,
                          0b00000)
 
-    ADD_REG_TO_NUM = Operation("ADD_REG_TO_NUM", [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "+", ReplacementTokens.NUM],
-                               [ReplacementTokens.GPR, "=", ReplacementTokens.NUM, "+", ReplacementTokens.GPR]],
+    ADD_REG_TO_NUM = Operation("ADD_REG_TO_NUM",
+                               [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "+", ReplacementTokens.NUM],
+                                [ReplacementTokens.GPR, "=", ReplacementTokens.NUM, "+", ReplacementTokens.GPR]],
                                OpTypes.NUM_GPR,
                                0b00001)
 
-    AND_REGS = Operation("AND_REGS", [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "&", ReplacementTokens.GPR]],
+    AND_REGS = Operation("AND_REGS",
+                         [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR,
+                             "&", ReplacementTokens.GPR]],
                          OpTypes.GPR_GPR,
                          0b00010)
 
@@ -60,13 +63,15 @@ class Operations(enum.Enum):
 
     OR_REG_WITH_NUM = Operation("OR_REG_WITH_NUM",
                                 [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.NUM],
-                                 [ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.NUM]], OpTypes.GPR_GPR, 0b00101)
+                                 [ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.NUM]],
+                                OpTypes.GPR_GPR,
+                                0b00101)
 
     BRANCH_IF_EQUAL = Operation("BRANCH_IF_EQUAL", [
-                                ["if", '(', "REG", "==", "REG", ")"]], OpTypes.COMP_BRANCH, 0b00110)
+                                ["if", '(', ReplacementTokens.GPR, "==", ReplacementTokens.GPR, ")", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00110)
 
     BRANCH_IF_NOT_EQUAL = Operation("BRANCH_IF_NOT_EQUAL", [
-        ["if", '(', "REG", "!=", "REG", ")"]], OpTypes.COMP_BRANCH, 0b00111)
+        ["if", '(', ReplacementTokens.GPR,  "!=", ReplacementTokens.GPR, ")", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00111)
 
     JUMP = Operation("JUMP", [
         ["J", "ADDR"]], OpTypes.COMP_BRANCH, 0b01000)
