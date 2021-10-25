@@ -8,76 +8,9 @@ from src.VLQRISC_Assembler.operations import Operations
 from dataclasses import dataclass
 
 
-@dataclass(frozen=True)
-class Scheme():
-    """a docstring"""
-    input: str
-    expected_tokenized_line: list[str]
-    syntax_tokens: list[list[str]]
-
-    expected_immediate_operand: Optional[int]
-
-    expected_Rd_common_name: Optional[str]
-    expected_Rd_num: Optional[int]
-
-    expected_Rs1_common_name: Optional[str]
-    expected_Rs1_num: Optional[int]
-
-    expected_Rs2_common_name: Optional[str]
-    expected_Rs2_num: Optional[int]
-
-    expected_opcode_int: int
-    expected_opcode_str: str
-
-    expected_type: operations.OpTypes
-
-
-input_output_schemes = [
-    Scheme("if($s4==$s2)", ["if", "(", "$s4", "==", "$s2", ")", "0x2"],
-           Operations.BRANCH_IF_EQUAL.value.syntax_tokens,
-           None, None, None,
-           "$s4", convert_reg_common_name_to_number("$s4"),
-           "$s2", convert_reg_common_name_to_number("$s2"),
-           Operations.BRANCH_IF_EQUAL.value.op_code,
-           Operations.BRANCH_IF_EQUAL.value.op_code_str,
-           Operations.BRANCH_IF_EQUAL.value.type),
-    Scheme("$s1=$s2+$s1", ["$s1", "=", "$s2", "+", "$s1"],
-           Operations.ADD_REGS.value.syntax_tokens,
-           None,
-           "$s1", convert_reg_common_name_to_number("$s1"),
-           "$s2", convert_reg_common_name_to_number("$s2"),
-           "$s1", convert_reg_common_name_to_number("$s1"),
-           Operations.ADD_REGS.value.op_code,
-           Operations.ADD_REGS.value.op_code_str,
-           Operations.ADD_REGS.value.type),
-    Scheme("$s1=$s2|$s1",
-           ["$s1", "=", "$s2", "|", "$s1"],
-           Operations.OR_REGS.value.syntax_tokens,
-           None,
-           "$s1", convert_reg_common_name_to_number("$s1"),
-           "$s2", convert_reg_common_name_to_number("$s2"),
-           "$s1", convert_reg_common_name_to_number("$s1"),
-           Operations.OR_REGS.value.op_code,
-           Operations.OR_REGS.value.op_code_str,
-           Operations.OR_REGS.value.type),
-    Scheme("$s1=$s2&$s1",
-           ["$s1", "=", "$s2", "&", "$s1"],
-           Operations.AND_REGS.value.syntax_tokens,
-           None,
-           "$s1", convert_reg_common_name_to_number("$s1"),
-           "$s2", convert_reg_common_name_to_number("$s2"),
-           "$s1", convert_reg_common_name_to_number("$s1"),
-           Operations.AND_REGS.value.op_code,
-           Operations.AND_REGS.value.op_code_str,
-           Operations.AND_REGS.value.type)
-
-
-]
-
-
 class TestLineParser(unittest.TestCase):
-    def test_loop(self):
-        for scheme in input_output_schemes:
+    def test_passing_input_output_schemes(self):
+        for scheme in passing_input_output_schemes:
             line_parser = parser.LineParser(scheme.input)
             line_data = line_parser.parse()
 
@@ -116,6 +49,12 @@ class TestLineParser(unittest.TestCase):
 
             self.assertEquals(
                 line_data.Rs1_common_name, scheme.expected_Rs1_common_name)
+
+            # jump adress and
+            self.assertEquals(line_data.immediate_operand,
+                              scheme.expected_immediate_operand)
+            self.assertEquals(line_data.jump_address_str,
+                              scheme.jump_address_str)
 
     def test_ADD_REGS(self):
 
@@ -274,3 +213,92 @@ class TestLineParser(unittest.TestCase):
                           Operations.ADD_REG_TO_NUM.value.op_code)
         self.assertEquals(line_data.opcode_str,
                           Operations.ADD_REG_TO_NUM.value.op_code_str)
+
+
+@dataclass(frozen=True)
+class Scheme():
+    """a docstring"""
+    input: str
+    expected_tokenized_line: list[str]
+    syntax_tokens: list[list[str]]
+
+    expected_immediate_operand: Optional[int]
+    jump_address_str: Optional[str]
+
+    expected_Rd_common_name: Optional[str]
+    expected_Rd_num: Optional[int]
+
+    expected_Rs1_common_name: Optional[str]
+    expected_Rs1_num: Optional[int]
+
+    expected_Rs2_common_name: Optional[str]
+    expected_Rs2_num: Optional[int]
+
+    expected_opcode_int: int
+    expected_opcode_str: str
+
+    expected_type: operations.OpTypes
+
+
+passing_input_output_schemes = [
+    Scheme("if($s0!=$s1)goto label", ["if", "(", "$s0", "!=", "$s1", ")", "goto", "label"],
+           Operations.BRANCH_IF_NOT_EQUAL.value.syntax_tokens, None, "label", None, None,
+           "$s0", convert_reg_common_name_to_number("$s0"),
+           "$s1", convert_reg_common_name_to_number("$s1"),
+           Operations.BRANCH_IF_NOT_EQUAL.value.op_code,
+           Operations.BRANCH_IF_NOT_EQUAL.value.op_code_str,
+           Operations.BRANCH_IF_NOT_EQUAL.value.type),
+    Scheme("if($s0!=$s1)goto label", ["if", "(", "$s0", "!=", "$s1", ")", "goto", "label"],
+           Operations.BRANCH_IF_NOT_EQUAL.value.syntax_tokens, None, "label", None, None,
+           "$s0", convert_reg_common_name_to_number("$s0"),
+           "$s1", convert_reg_common_name_to_number("$s1"),
+           Operations.BRANCH_IF_NOT_EQUAL.value.op_code,
+           Operations.BRANCH_IF_NOT_EQUAL.value.op_code_str,
+           Operations.BRANCH_IF_NOT_EQUAL.value.type),
+    Scheme("if($s4==$s2)goto0x1111111111111111", ["if", "(", "$s4", "==", "$s2", ")", "goto", "0x1111111111111111"],
+           Operations.BRANCH_IF_EQUAL.value.syntax_tokens,
+           None, "0x1111111111111111", None, None,
+           "$s4", convert_reg_common_name_to_number(
+               "$s4"),
+           "$s2", convert_reg_common_name_to_number(
+               "$s2"),
+           Operations.BRANCH_IF_EQUAL.value.op_code,
+           Operations.BRANCH_IF_EQUAL.value.op_code_str,
+           Operations.BRANCH_IF_EQUAL.value.type),
+    Scheme("$s1=$s2+$s1", ["$s1", "=", "$s2", "+", "$s1"],
+           Operations.ADD_REGS.value.syntax_tokens,
+           None, None,
+           "$s1", convert_reg_common_name_to_number(
+               "$s1"),
+           "$s2", convert_reg_common_name_to_number(
+               "$s2"),
+           "$s1", convert_reg_common_name_to_number(
+               "$s1"),
+           Operations.ADD_REGS.value.op_code,
+           Operations.ADD_REGS.value.op_code_str,
+           Operations.ADD_REGS.value.type),
+    Scheme("$s1=$s2|$s1", ["$s1", "=", "$s2", "|", "$s1"],
+           Operations.OR_REGS.value.syntax_tokens,
+           None, None,
+           "$s1", convert_reg_common_name_to_number(
+               "$s1"),
+           "$s2", convert_reg_common_name_to_number(
+               "$s2"),
+           "$s1", convert_reg_common_name_to_number(
+               "$s1"),
+           Operations.OR_REGS.value.op_code,
+           Operations.OR_REGS.value.op_code_str,
+           Operations.OR_REGS.value.type),
+    Scheme("$s1=$s2&$s1", ["$s1", "=", "$s2", "&", "$s1"],
+           Operations.AND_REGS.value.syntax_tokens,
+           None, None,
+           "$s1", convert_reg_common_name_to_number(
+               "$s1"),
+           "$s2", convert_reg_common_name_to_number(
+               "$s2"),
+           "$s1", convert_reg_common_name_to_number(
+               "$s1"),
+           Operations.AND_REGS.value.op_code,
+           Operations.AND_REGS.value.op_code_str,
+           Operations.AND_REGS.value.type)
+]
