@@ -18,10 +18,10 @@ class WrongOperationType(Exception):
 class LineParser():
     def __init__(self, line: str):
         self.line = copy.copy(line)
-        self.line_data: LineData = LineData()
 
     def parse(self):
-        self.tokenized_line = self.__tokenize_line(self.line)
+        self.line_data: LineData = LineData(self.__tokenize_line(self.line))
+
         self.line_data.form = self.__generate_standard_form()
 
         self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
@@ -39,21 +39,23 @@ class LineParser():
     def get_operands_num_gpr(self):
         self.raise_on_wrong_op_type(operations.OpTypes.NUM_GPR)
 
-        if "$" not in self.tokenized_line[0] and ("$" not in self.tokenized_line[2] != "$" not in self.tokenized_line[4]):
+        if "$" not in self.line_data.tokenized_line[0] and ("$" not in self.line_data.tokenized_line[2] != "$" not in self.line_data.tokenized_line[4]):
             raise InvalidOperationInput(
                 f"{operations.OpTypes.NUM_GPR} operation requires the following $Rd = NUM [operation] $Rs1 or $Rd = Rs1 [operation] NUM")
         else:
-            self.line_data.Rd_common_name = self.tokenized_line[0]
+            self.line_data.Rd_common_name = self.line_data.tokenized_line[0]
             self.line_data.immediate_operand = None
             self.line_data.Rs1_common_name = None
         try:
-            self.line_data.immediate_operand = int(self.tokenized_line[2])
-            self.line_data.Rs1_common_name = self.tokenized_line[4]
+            self.line_data.immediate_operand = int(
+                self.line_data.tokenized_line[2])
+            self.line_data.Rs1_common_name = self.line_data.tokenized_line[4]
 
         except:
             try:
-                self.line_data.immediate_operand = int(self.tokenized_line[4])
-                self.line_data.Rs1_common_name = self.tokenized_line[2]
+                self.line_data.immediate_operand = int(
+                    self.line_data.tokenized_line[4])
+                self.line_data.Rs1_common_name = self.line_data.tokenized_line[2]
             except:
                 if self.line_data.immediate_operand is None or self.line_data.Rs1_common_name is None:
                     raise InvalidOperationInput(
@@ -68,13 +70,13 @@ class LineParser():
         self.raise_on_wrong_op_type(operations.OpTypes.GPR_GPR)
 
         # type:ignore
-        if "$" not in self.tokenized_line[0] and "$" not in self.tokenized_line[2] and "$" not in self.tokenized_line[4]:
+        if "$" not in self.line_data.tokenized_line[0] and "$" not in self.line_data.tokenized_line[2] and "$" not in self.line_data.tokenized_line[4]:
             raise InvalidOperationInput(
                 f"{operations.OpTypes.GPR_GPR} operation requires the following $Rd = $Rs1 [operation] $Rs2")
 
-        self.line_data.Rd_common_name = self.tokenized_line[0]
-        self.line_data.Rs1_common_name = self.tokenized_line[2]
-        self.line_data.Rs2_common_name = self.tokenized_line[4]
+        self.line_data.Rd_common_name = self.line_data.tokenized_line[0]
+        self.line_data.Rs1_common_name = self.line_data.tokenized_line[2]
+        self.line_data.Rs2_common_name = self.line_data.tokenized_line[4]
 
         self.line_data.Rd_num = hw_definitions.convert_reg_common_name_to_number(
             self.line_data.Rd_common_name)
@@ -97,11 +99,15 @@ class LineParser():
         raise InvalidOperationInput(f"invalid line of input {self.line}")
 
     def __generate_standard_form(self):
+
         standard_line = copy.copy(self.line)
+
         for reg in REGISTER_NAMES:
             standard_line = standard_line.replace(
                 reg, f"{operations.ReplacementTokens.GPR} ")
+
         standard_line_tokens: list[str] = self.__tokenize_line(standard_line)
+
         for i, token in enumerate(standard_line_tokens):
             try:
                 float(token)
@@ -111,16 +117,12 @@ class LineParser():
         return standard_line_tokens
 
     def __tokenize_line(self, line: str) -> list[str]:
-        if "=" in line and "==" not in line:
-            line = line.replace(
-                "=", " = ")
-        if "+" in line:
-            line = line.replace(
-                "+", " + ")
-        if "|" in line:
-            line = line.replace("|", " | ")
-        if "&" in line:
-            line = line.replace("&", " & ")
+        operators = ["=", "==", "+", "|", "&", "(", ")"]
+        for operator in operators:
+            if operator == "=" and "==" in line:
+                continue
+
+            line = line.replace(operator, f" {operator} ")
 
         line.strip()
         tokens: list[str] = line.split()  # type: ignore
@@ -145,9 +147,12 @@ class LineParser():
 
 
 class LineData():
-    def __init__(self):
+    def __init__(self, tokenized_line: list[str]):
         self.opcode_int: Optional[int] = None
         self.opcode_str: Optional[str] = None
+
+        self.tokenized_line: list[str] = tokenized_line
+
         self.type: Optional[operations.OpTypes] = None
         self.form: Optional[list[str]] = None
 
