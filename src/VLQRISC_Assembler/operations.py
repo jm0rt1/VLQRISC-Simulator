@@ -68,10 +68,19 @@ class Operations(enum.Enum):
                                 0b00101)
 
     BRANCH_IF_EQUAL = Operation("BRANCH_IF_EQUAL", [
-                                ["if", '(', ReplacementTokens.GPR, "==", ReplacementTokens.GPR, ")", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00110)
+                                ["if", '(', ReplacementTokens.GPR, "==", ReplacementTokens.GPR, ")", "goto", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00110)
 
     BRANCH_IF_NOT_EQUAL = Operation("BRANCH_IF_NOT_EQUAL", [
-        ["if", '(', ReplacementTokens.GPR,  "!=", ReplacementTokens.GPR, ")", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00111)
+        ["if", '(', ReplacementTokens.GPR,  "!=", ReplacementTokens.GPR, ")", "goto", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00111)
 
     JUMP = Operation("JUMP", [
-        ["J", "ADDR"]], OpTypes.COMP_BRANCH, 0b01000)
+        ["J", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01000)
+
+
+operators = []
+for op in Operations:
+    tokens = op.value.syntax_tokens
+    for list in tokens:
+        for token in list:
+            if token not in operators and token not in ReplacementTokens:
+                operators.append(token)
