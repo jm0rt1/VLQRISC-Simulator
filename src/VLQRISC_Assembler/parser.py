@@ -145,7 +145,7 @@ class LineParser():
         return standard_line_tokens
 
     def __tokenize_line(self, line: str) -> list[str]:
-        operators = ["=", "==", "+", "|", "&", "(", ")", "if", "goto", "!="]
+        operators = operations.operators
         for operator in operators:
             if operator == "=" and ("==" in line or "!=" in line):
                 continue

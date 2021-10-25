@@ -61,11 +61,11 @@ class Operations(enum.Enum):
                         OpTypes.GPR_GPR,
                         0b00100)
 
-    OR_REG_WITH_NUM = Operation("OR_REG_WITH_NUM",
-                                [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.NUM],
+    OR_REG_W_NUM = Operation("OR_REG_WITH_NUM",
+                             [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.NUM],
                                  [ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.NUM]],
-                                OpTypes.GPR_GPR,
-                                0b00101)
+                             OpTypes.GPR_GPR,
+                             0b00101)
 
     BRANCH_IF_EQUAL = Operation("BRANCH_IF_EQUAL", [
                                 ["if", '(', ReplacementTokens.GPR, "==", ReplacementTokens.GPR, ")", "goto", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00110)
@@ -77,7 +77,7 @@ class Operations(enum.Enum):
         ["J", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01000)
 
 
-operators = []
+operators: list[str] = []
 for op in Operations:
     tokens = op.value.syntax_tokens
     for list in tokens:
