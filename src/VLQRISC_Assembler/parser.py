@@ -100,12 +100,18 @@ class LineParser():
                 self.line_data.Rs2_common_name)
             self.line_data.jump_address_str = self.line_data.tokenized_line[-1]
 
+        def get_operands_uncond_branch():
+            self.raise_on_wrong_op_type(operations.OpTypes.UNCOND_BRANCH)
+            self.line_data.jump_address_str = self.line_data.tokenized_line[-1]
+
         if self.line_data.type == operations.OpTypes.GPR_GPR:
             get_operands_gpr_gpr()
         elif self.line_data.type == operations.OpTypes.NUM_GPR:
             get_operands_num_gpr()
         elif self.line_data.type == operations.OpTypes.COMP_BRANCH:
             get_operands_comp_branch()
+        elif self.line_data.type == operations.OpTypes.UNCOND_BRANCH:
+            get_operands_uncond_branch()
         else:
             raise NoTypeSpecified("There was no operation type specified")
 
