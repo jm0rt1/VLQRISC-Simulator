@@ -56,164 +56,6 @@ class TestLineParser(unittest.TestCase):
             self.assertEquals(line_data.jump_address_str,
                               scheme.jump_address_str)
 
-    def test_ADD_REGS(self):
-
-        line_parser = parser.LineParser("$s1        =$s2+$s1")
-        line_data: parser.LineData = line_parser.parse()
-
-        # test tokenization
-        tokenized_line = line_data.tokenized_line
-        expected = ["$s1", "=", "$s2", "+", "$s1"]
-        self.assertEquals(tokenized_line, expected)
-
-        # test standard form
-        self.assertTrue(
-            any(form == line_data.form for form in Operations.ADD_REGS.value.syntax_tokens))
-
-        # test opcode obtained
-        found_opcode_int = line_data.opcode_int
-        found_opcode_str = line_data.opcode_str
-        self.assertEquals(
-            found_opcode_int, Operations.ADD_REGS.value.op_code)
-        self.assertEquals(found_opcode_str,
-                          Operations.ADD_REGS.value.op_code_str)
-        #############
-        line_parser = parser.LineParser("$s4=$s2+$s1")
-        line_data = line_parser.parse()
-        # test tokenization
-        tokenized_line = line_data.tokenized_line
-        expected = ["$s4", "=", "$s2", "+", "$s1"]
-        self.assertEquals(tokenized_line, expected)
-
-        # test standard form
-        self.assertTrue(
-            any(form == line_data.form for form in Operations.ADD_REGS.value.syntax_tokens))
-
-        # test opcode obtained
-        found_opcode_int = line_data.opcode_int
-        found_opcode_str = line_data.opcode_str
-        self.assertEquals(
-            found_opcode_int, Operations.ADD_REGS.value.op_code)
-        self.assertEquals(found_opcode_str,
-                          Operations.ADD_REGS.value.op_code_str)
-
-        self.assertEquals(line_data.Rs2_num, 6)
-        self.assertEquals(line_data.Rs1_num, 7)
-        self.assertEquals(line_data.Rd_num, 9)
-
-    def test_OR_REGS(self):
-
-        line_parser = parser.LineParser("$s1=$s2|$s1")
-        line_data = line_parser.parse()
-        # test tokenization
-        tokenized_line = line_data.tokenized_line
-        expected = ["$s1", "=", "$s2", "|", "$s1"]
-        self.assertEquals(tokenized_line, expected)
-
-        # test standard form
-        self.assertTrue(
-            any(form == line_data.form for form in Operations.OR_REGS.value.syntax_tokens))
-
-        # test opcode obtained
-        found_opcode_int = line_data.opcode_int
-        found_opcode_str = line_data.opcode_str
-        self.assertEquals(
-            found_opcode_int, Operations.OR_REGS.value.op_code)
-        self.assertEquals(found_opcode_str,
-                          Operations.OR_REGS.value.op_code_str)
-
-        self.assertEquals(line_data.Rs2_num, 6)
-        self.assertEquals(line_data.Rs1_num, 7)
-        self.assertEquals(line_data.Rd_num, 6)
-
-    def test_AND_REGS(self):
-        line_parser = parser.LineParser("$t0=$s2&$t1")
-        line_data = line_parser.parse()
-        # test tokenization
-        tokenized_line = line_data.tokenized_line
-        expected = ["$t0", "=", "$s2", "&", "$t1"]
-        self.assertEquals(tokenized_line, expected)
-
-        # test standard form
-        self.assertTrue(
-            any(form == line_data.form for form in Operations.AND_REGS.value.syntax_tokens))
-
-        # test opcode obtained
-        found_opcode_int = line_data.opcode_int
-        found_opcode_str = line_data.opcode_str
-
-        self.assertEquals(
-            found_opcode_int, Operations.AND_REGS.value.op_code)
-        self.assertEquals(found_opcode_str,
-                          Operations.AND_REGS.value.op_code_str)
-
-        self.assertEquals(line_data.Rs2_num, 2)
-        self.assertEquals(line_data.Rs1_num, 7)
-        self.assertEquals(line_data.Rd_num, 1)
-
-    def test_ADD_REG_TO_NUM(self):
-        line_parser = parser.LineParser("$t0=$s2+1000")
-        line_data = line_parser.parse()
-        # test tokenization
-        tokenized_line = line_data.tokenized_line
-        expected = ["$t0", "=", "$s2", "+", "1000"]
-        self.assertEquals(tokenized_line, expected)
-        self.assertTrue(
-            any(form == line_data.form for form in Operations.ADD_REG_TO_NUM.value.syntax_tokens))
-
-        self.assertEquals(line_data.immediate_operand, 1000)
-        self.assertEquals(line_data.Rd_common_name, "$t0")
-        self.assertEquals(line_data.Rs1_common_name, "$s2")
-
-        self.assertEquals(line_data.Rd_num, 1)
-        self.assertEquals(line_data.Rs1_num, 7)
-
-        self.assertEquals(line_data.opcode_int,
-                          Operations.ADD_REG_TO_NUM.value.op_code)
-        self.assertEquals(line_data.opcode_str,
-                          Operations.ADD_REG_TO_NUM.value.op_code_str)
-
-        line_parser = parser.LineParser("$t0=1000+$s2")
-        line_data = line_parser.parse()
-
-        self.assertTrue(
-            any(form == line_data.form for form in Operations.ADD_REG_TO_NUM.value.syntax_tokens))
-
-        self.assertEquals(line_data.opcode_int,
-                          Operations.ADD_REG_TO_NUM.value.op_code)
-        self.assertEquals(line_data.opcode_str,
-                          Operations.ADD_REG_TO_NUM.value.op_code_str)
-
-        self.assertEquals(line_data.immediate_operand, 1000)
-        self.assertEquals(line_data.Rd_common_name, "$t0")
-        self.assertEquals(line_data.Rs1_common_name, "$s2")
-
-        self.assertEquals(line_data.Rd_num, 1)
-        self.assertEquals(line_data.Rs1_num, 7)
-
-    def _BRANCH_IF_EQUAL(self):
-        line_parser = parser.LineParser("if($s4==$s2)")
-        line_data = line_parser.parse()
-
-        # test tokenization
-        tokenized_line = line_data.tokenized_line
-        expected = ["if", "(", "$s4", "==", "$s2", ")"]
-        self.assertEquals(tokenized_line, expected)
-        self.assertTrue(
-            any(form == line_data.form for form in Operations.ADD_REG_TO_NUM.value.syntax_tokens))
-
-        self.assertEquals(line_data.immediate_operand, 1000)
-        self.assertEquals(line_data.Rd_common_name, "$t0")
-        self.assertEquals(line_data.Rs1_common_name, "$s2")
-
-        self.assertEquals(line_data.Rd_num, 1)
-        self.assertEquals(line_data.Rs1_num, 7)
-
-        self.assertEquals(line_data.opcode_int,
-                          Operations.ADD_REG_TO_NUM.value.op_code)
-        self.assertEquals(line_data.opcode_str,
-                          Operations.ADD_REG_TO_NUM.value.op_code_str)
-
 
 @dataclass(frozen=True)
 class Scheme():
@@ -241,21 +83,49 @@ class Scheme():
 
 
 passing_input_output_schemes = [
-    Scheme("if($s0!=$s1)goto label", ["if", "(", "$s0", "!=", "$s1", ")", "goto", "label"],
+    #Scheme("J label")
+    Scheme("j label", ["j", "label"],
+           Operations.JUMP.value.syntax_tokens, None, "label", None, None,
+           None, None, None, None,
+           Operations.JUMP.value.op_code,
+           Operations.JUMP.value.op_code_str,
+           Operations.JUMP.value.type),
+    Scheme("if($s0<$s1)j label", ["if", "(", "$s0", "<", "$s1", ")", "j", "label"],
+           Operations.BRANCH_LT.value.syntax_tokens, None, "label", None, None,
+           "$s0", convert_reg_common_name_to_number("$s0"),
+           "$s1", convert_reg_common_name_to_number("$s1"),
+           Operations.BRANCH_LT.value.op_code,
+           Operations.BRANCH_LT.value.op_code_str,
+           Operations.BRANCH_LT.value.type),
+    Scheme("if($s0<=$s1)j label", ["if", "(", "$s0", "<=", "$s1", ")", "j", "label"],
+           Operations.BRANCH_LT_OR_EQUAL.value.syntax_tokens, None, "label", None, None,
+           "$s0", convert_reg_common_name_to_number("$s0"),
+           "$s1", convert_reg_common_name_to_number("$s1"),
+           Operations.BRANCH_LT_OR_EQUAL.value.op_code,
+           Operations.BRANCH_LT_OR_EQUAL.value.op_code_str,
+           Operations.BRANCH_LT_OR_EQUAL.value.type),
+    Scheme("if($s0>$s1)j label", ["if", "(", "$s0", ">", "$s1", ")", "j", "label"],
+           Operations.BRANCH_GT.value.syntax_tokens, None, "label", None, None,
+           "$s0", convert_reg_common_name_to_number("$s0"),
+           "$s1", convert_reg_common_name_to_number("$s1"),
+           Operations.BRANCH_GT.value.op_code,
+           Operations.BRANCH_GT.value.op_code_str,
+           Operations.BRANCH_GT.value.type),
+    Scheme("if($s0>=$s1)j label", ["if", "(", "$s0", ">=", "$s1", ")", "j", "label"],
+           Operations.BRANCH_GT_OR_EQUAL.value.syntax_tokens, None, "label", None, None,
+           "$s0", convert_reg_common_name_to_number("$s0"),
+           "$s1", convert_reg_common_name_to_number("$s1"),
+           Operations.BRANCH_GT_OR_EQUAL.value.op_code,
+           Operations.BRANCH_GT_OR_EQUAL.value.op_code_str,
+           Operations.BRANCH_GT_OR_EQUAL.value.type),
+    Scheme("if($s0!=$s1)j label", ["if", "(", "$s0", "!=", "$s1", ")", "j", "label"],
            Operations.BRANCH_IF_NOT_EQUAL.value.syntax_tokens, None, "label", None, None,
            "$s0", convert_reg_common_name_to_number("$s0"),
            "$s1", convert_reg_common_name_to_number("$s1"),
            Operations.BRANCH_IF_NOT_EQUAL.value.op_code,
            Operations.BRANCH_IF_NOT_EQUAL.value.op_code_str,
            Operations.BRANCH_IF_NOT_EQUAL.value.type),
-    Scheme("if($s0!=$s1)goto label", ["if", "(", "$s0", "!=", "$s1", ")", "goto", "label"],
-           Operations.BRANCH_IF_NOT_EQUAL.value.syntax_tokens, None, "label", None, None,
-           "$s0", convert_reg_common_name_to_number("$s0"),
-           "$s1", convert_reg_common_name_to_number("$s1"),
-           Operations.BRANCH_IF_NOT_EQUAL.value.op_code,
-           Operations.BRANCH_IF_NOT_EQUAL.value.op_code_str,
-           Operations.BRANCH_IF_NOT_EQUAL.value.type),
-    Scheme("if($s4==$s2)goto0x1111111111111111", ["if", "(", "$s4", "==", "$s2", ")", "goto", "0x1111111111111111"],
+    Scheme("if($s4==$s2)j0x1111111111111111", ["if", "(", "$s4", "==", "$s2", ")", "j", "0x1111111111111111"],
            Operations.BRANCH_IF_EQUAL.value.syntax_tokens,
            None, "0x1111111111111111", None, None,
            "$s4", convert_reg_common_name_to_number(
