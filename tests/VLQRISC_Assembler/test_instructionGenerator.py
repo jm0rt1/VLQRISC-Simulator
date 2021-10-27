@@ -26,7 +26,7 @@ class TestInstructionGenerator(unittest.TestCase):
         expected = Operations.ADD_REGS.value.op_code_str + \
             rd+rs1+rs2+("0"*13)
 
-        self.assertEquals(instruction, expected)
+        self.assertEqual(instruction, expected)
 
         line_parser = parser.LineParser("$t0=$t2&$s0")
         line_data = line_parser.parse()
@@ -41,7 +41,7 @@ class TestInstructionGenerator(unittest.TestCase):
         expected = Operations.AND_REGS.value.op_code_str + \
             rd+rs1+rs2+("0"*13)
 
-        self.assertEquals(instruction, expected)
+        self.assertEqual(instruction, expected)
 
         line_parser = parser.LineParser("$t0=$t2|$s1")
         line_data = line_parser.parse()
@@ -56,7 +56,7 @@ class TestInstructionGenerator(unittest.TestCase):
         expected = Operations.OR_REGS.value.op_code_str + \
             rd+rs1+rs2+("0"*13)
 
-        self.assertEquals(instruction, expected)
+        self.assertEqual(instruction, expected)
 
     def test_loop(self):
 
@@ -86,7 +86,7 @@ class TestInstructionGenerator(unittest.TestCase):
             else:
                 raise Exception("Type not found")
 
-            self.assertEquals(instruction, expected_instruction)
+            self.assertEqual(instruction, expected_instruction)
 
 
 @ dataclass(frozen=True)
