@@ -138,9 +138,9 @@ class LineParser():
 
         standard_line_tokens: list[str] = self.__tokenize_line(standard_line)
 
-        if "goto" in standard_line_tokens:
+        if "j" in standard_line_tokens:
             standard_line_tokens[standard_line_tokens.index(
-                "goto")+1] = operations.ReplacementTokens.ADDRESS
+                "j")+1] = operations.ReplacementTokens.ADDRESS
 
         for i, token in enumerate(standard_line_tokens):
             try:
@@ -153,7 +153,9 @@ class LineParser():
     def __tokenize_line(self, line: str) -> list[str]:
         operators = operations.operators
         for operator in operators:
-            if operator == "=" and ("==" in line or "!=" in line):
+            if operator == "=" and ("==" in line or "!=" in line or "<=" in line or ">=" in line):
+                continue
+            elif (operator == "<" and "<=" in line) or (operator == ">" and ">=" in line):
                 continue
 
             line = line.replace(operator, f" {operator} ")
@@ -162,22 +164,6 @@ class LineParser():
         tokens: list[str] = line.split()  # type: ignore
 
         return tokens
-
-    def _(self):
-        if "==" in self.line:
-            self.line_split = self.line.split("==")
-        self.line_split = self.line.split()
-
-    def determine_opcode(self):
-
-        if "=" in self.line and "==" not in self.line:
-            if "+" in self.line:
-                if self.line.count("$") == 2:
-                    return operations.Operations.ADD_REGS.value.op_code
-                else:
-                    return operations.Operations.ADD_REG_TO_NUM.value.op_code
-            elif "-" in self.line:
-                pass
 
 
 class LineData():

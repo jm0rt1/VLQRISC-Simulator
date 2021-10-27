@@ -12,6 +12,7 @@ class OpTypes(str, enum.Enum):
     GPR_GPR = "register_with_register"
     NUM_GPR = "num_with_register"  # number with GPR
     COMP_BRANCH = "comparison_branch"
+    UNCOND_BRANCH = "unconditional_branch"
 
 
 class Operation():
@@ -68,13 +69,25 @@ class Operations(enum.Enum):
                              0b00101)
 
     BRANCH_IF_EQUAL = Operation("BRANCH_IF_EQUAL", [
-                                ["if", '(', ReplacementTokens.GPR, "==", ReplacementTokens.GPR, ")", "goto", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00110)
+                                ["if", '(', ReplacementTokens.GPR, "==", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00110)
 
     BRANCH_IF_NOT_EQUAL = Operation("BRANCH_IF_NOT_EQUAL", [
-        ["if", '(', ReplacementTokens.GPR,  "!=", ReplacementTokens.GPR, ")", "goto", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00111)
+        ["if", '(', ReplacementTokens.GPR,  "!=", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00111)
+
+    BRANCH_GT_OR_EQUAL = Operation("BRANCH_IF_GREATER_THAN_OR_EQUAL", [[
+                                   "if", '(', ReplacementTokens.GPR,  ">=", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01000)
+
+    BRANCH_GT = Operation("BRANCH_IF_GREATER_THAN", [[
+        "if", '(', ReplacementTokens.GPR,  ">", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01001)
+
+    BRANCH_LT_OR_EQUAL = Operation("BRANCH_IF_LESS_THAN_OR_EQUAL", [[
+        "if", '(', ReplacementTokens.GPR,  "<=", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01010)
+
+    BRANCH_LT = Operation("BRANCH_IF_LESS_THAN", [[
+        "if", '(', ReplacementTokens.GPR,  "<", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01011)
 
     JUMP = Operation("JUMP", [
-        ["J", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01000)
+        ["j", ReplacementTokens.ADDRESS]], OpTypes.UNCOND_BRANCH, 0b01100)
 
 
 operators: list[str] = []
