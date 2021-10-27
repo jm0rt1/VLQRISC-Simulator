@@ -1,1 +1,1 @@
-python -m unittest discover -s tests -p '*test*.py' > stdout
+python -m unittest discover -s tests -p '*test*.py' | stdout
