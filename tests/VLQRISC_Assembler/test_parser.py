@@ -27,34 +27,56 @@ class TestLineParser(unittest.TestCase):
 
             # opcode and opcode str
             self.assertEqual(
-                line_data.opcode_int, scheme.expected_opcode_int)
+                line_data.opcode_int.int, scheme.expected_opcode_int)
             self.assertEqual(line_data.opcode_str,
                              scheme.expected_opcode_str)
 
-            # Rd
-            self.assertEqual(line_data.Rd_num, scheme.expected_Rd_num)
-            self.assertEqual(line_data.Rd_common_name,
-                             scheme.expected_Rd_common_name)
-
+            if line_data.Rd_num is not None:
+                # Rd
+                self.assertEqual(line_data.Rd_num.int, scheme.expected_Rd_num)
+                self.assertEqual(line_data.Rd_common_name,
+                                 scheme.expected_Rd_common_name)
+            else:
+                self.assertEqual(line_data.immediate_operand,
+                                 scheme.expected_immediate_operand)
+                self.assertEqual(line_data.jump_address_str,
+                                 scheme.jump_address_str)
             # Rs1
-            self.assertEqual(line_data.Rs1_num, scheme.expected_Rs1_num)
-            self.assertEqual(line_data.Rs1_common_name,
-                             scheme.expected_Rs1_common_name)
+            if line_data.Rs1_num is not None:
+                self.assertEqual(line_data.Rs1_num.int,
+                                 scheme.expected_Rs1_num)
+                self.assertEqual(line_data.Rs1_common_name,
+                                 scheme.expected_Rs1_common_name)
+            else:
+                self.assertEqual(
+                    line_data.Rs1_num, scheme.expected_Rs1_num)
+                self.assertEqual(line_data.Rs1_common_name,
+                                 scheme.expected_Rs1_common_name)
 
             # Rs2
-            self.assertEqual(line_data.Rs2_num,
-                             scheme.expected_Rs2_num)
-            self.assertEqual(line_data.Rs2_common_name,
-                             scheme.expected_Rs2_common_name)
-
+            if line_data.Rs2_num is not None:
+                self.assertEqual(line_data.Rs2_num.int,
+                                 scheme.expected_Rs2_num)
+                self.assertEqual(line_data.Rs2_common_name,
+                                 scheme.expected_Rs2_common_name)
+            else:
+                self.assertEqual(
+                    line_data.Rs1_num, scheme.expected_Rs1_num)
+                self.assertEqual(line_data.Rs1_common_name,
+                                 scheme.expected_Rs1_common_name)
             self.assertEqual(
                 line_data.Rs1_common_name, scheme.expected_Rs1_common_name)
-
-            # jump adress and
-            self.assertEqual(line_data.immediate_operand,
-                             scheme.expected_immediate_operand)
-            self.assertEqual(line_data.jump_address_str,
-                             scheme.jump_address_str)
+            if line_data.immediate_operand is not None:
+                # jump adress and
+                self.assertEqual(line_data.immediate_operand.int,
+                                 scheme.expected_immediate_operand)
+                self.assertEqual(line_data.jump_address_str,
+                                 scheme.jump_address_str)
+            else:
+                self.assertEqual(line_data.immediate_operand,
+                                 scheme.expected_immediate_operand)
+                self.assertEqual(line_data.jump_address_str,
+                                 scheme.jump_address_str)
 
 
 @dataclass(frozen=True)
