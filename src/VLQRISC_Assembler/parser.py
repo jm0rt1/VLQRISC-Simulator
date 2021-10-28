@@ -1,9 +1,10 @@
 from __future__ import annotations
 from typing import Optional, Tuple
-from src.VLQRISC_Assembler import hw_definitions
+from src.Shared.fwi import FWI_unsigned
+from src.VLQRISC_Simulator import hw_definitions
 
 import src.VLQRISC_Assembler.operations as operations
-from src.VLQRISC_Assembler.hw_definitions import REGISTER_NAMES
+from src.VLQRISC_Simulator.hw_definitions import REGISTER_NAMES
 import copy
 
 
@@ -47,24 +48,24 @@ class LineParser():
                 self.line_data.immediate_operand = None
                 self.line_data.Rs1_common_name = None
             try:
-                self.line_data.immediate_operand = int(
-                    self.line_data.tokenized_line[2])
+                self.line_data.immediate_operand = FWI_unsigned(int(
+                    self.line_data.tokenized_line[2]), 12)
                 self.line_data.Rs1_common_name = self.line_data.tokenized_line[4]
 
             except:
                 try:
-                    self.line_data.immediate_operand = int(
-                        self.line_data.tokenized_line[4])
+                    self.line_data.immediate_operand = FWI_unsigned(int(
+                        self.line_data.tokenized_line[4]))
                     self.line_data.Rs1_common_name = self.line_data.tokenized_line[2]
                 except:
                     if self.line_data.immediate_operand is None or self.line_data.Rs1_common_name is None:
                         raise InvalidOperationInput(
                             f"{operations.OpTypes.NUM_GPR} requires one of the two operands to be a number, the other a register")
 
-            self.line_data.Rs1_num = hw_definitions.convert_reg_common_name_to_number(
-                self.line_data.Rs1_common_name)
-            self.line_data.Rd_num = hw_definitions.convert_reg_common_name_to_number(
-                self.line_data.Rd_common_name)
+            self.line_data.Rs1_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
+                self.line_data.Rs1_common_name), 4)
+            self.line_data.Rd_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
+                self.line_data.Rd_common_name), 4)
 
         def get_operands_gpr_gpr():
             self.raise_on_wrong_op_type(operations.OpTypes.GPR_GPR)
@@ -78,12 +79,12 @@ class LineParser():
             self.line_data.Rs1_common_name = self.line_data.tokenized_line[2]
             self.line_data.Rs2_common_name = self.line_data.tokenized_line[4]
 
-            self.line_data.Rd_num = hw_definitions.convert_reg_common_name_to_number(
-                self.line_data.Rd_common_name)
-            self.line_data.Rs1_num = hw_definitions.convert_reg_common_name_to_number(
-                self.line_data.Rs1_common_name)
-            self.line_data.Rs2_num = hw_definitions.convert_reg_common_name_to_number(
-                self.line_data.Rs2_common_name)
+            self.line_data.Rd_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
+                self.line_data.Rd_common_name), 4)
+            self.line_data.Rs1_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
+                self.line_data.Rs1_common_name), 4)
+            self.line_data.Rs2_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
+                self.line_data.Rs2_common_name), 4)
 
         def get_operands_comp_branch():
             self.raise_on_wrong_op_type(operations.OpTypes.COMP_BRANCH)
@@ -94,10 +95,10 @@ class LineParser():
             self.line_data.Rs1_common_name = self.line_data.tokenized_line[2]
             self.line_data.Rs2_common_name = self.line_data.tokenized_line[4]
 
-            self.line_data.Rs1_num = hw_definitions.convert_reg_common_name_to_number(
-                self.line_data.Rs1_common_name)
-            self.line_data.Rs2_num = hw_definitions.convert_reg_common_name_to_number(
-                self.line_data.Rs2_common_name)
+            self.line_data.Rs1_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
+                self.line_data.Rs1_common_name), 4)
+            self.line_data.Rs2_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
+                self.line_data.Rs2_common_name), 4)
             self.line_data.jump_address_str = self.line_data.tokenized_line[-1]
 
         def get_operands_uncond_branch():
@@ -120,11 +121,11 @@ class LineParser():
             raise WrongOperationType(
                 f"This must be called on a {op_type}")
 
-    def __get_op_info(self) -> Tuple[int, str, operations.OpTypes]:
+    def __get_op_info(self) -> Tuple[FWI_unsigned, str, operations.OpTypes]:
         for op in operations.Operations.__members__.values():
             tokens = op.value.syntax_tokens
             if any(form == self.line_data.form for form in tokens):
-                return op.value.op_code, op.value.op_code_str, op.value.type
+                return FWI_unsigned(op.value.op_code, 5), op.value.op_code_str, op.value.type
 
         raise InvalidOperationInput(f"invalid line of input {self.line}")
 
@@ -168,7 +169,7 @@ class LineParser():
 
 class LineData():
     def __init__(self, tokenized_line: list[str]):
-        self.opcode_int: Optional[int] = None
+        self.opcode_int: FWI_unsigned
         self.opcode_str: Optional[str] = None
 
         self.tokenized_line: list[str] = tokenized_line
@@ -180,9 +181,9 @@ class LineData():
         self.Rs1_common_name: Optional[str] = None
         self.Rs2_common_name: Optional[str] = None
 
-        self.immediate_operand: Optional[int] = None
+        self.immediate_operand: Optional[FWI_unsigned] = None
 
-        self.Rd_num: Optional[int] = None
-        self.Rs1_num: Optional[int] = None
-        self.Rs2_num: Optional[int] = None
+        self.Rd_num: Optional[FWI_unsigned] = None
+        self.Rs1_num: Optional[FWI_unsigned] = None
+        self.Rs2_num: Optional[FWI_unsigned] = None
         self.jump_address_str: Optional[str] = None
