@@ -92,6 +92,11 @@ def signed_bin_str_to_int(string: str) -> int:
         # positive
         return int(string, 2)
 
+def unsigned_bin_str_to_int(string:str)->int:
+
+    # positive
+    return int(string, 2)
+
 
 def int_twos_complement(integer: int, n: int):
     """compute the 2's complement of int value val"""
