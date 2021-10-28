@@ -1,5 +1,5 @@
 import unittest
-import src.VLQRISC_Assembler.hw_definitions as hw_definitions
+import src.VLQRISC_Simulator.hw_definitions as hw_definitions
 
 
 class TestHWDefinitions(unittest.TestCase):
