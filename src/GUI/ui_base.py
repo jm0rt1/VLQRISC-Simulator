@@ -18,11 +18,27 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.reg_table = QtWidgets.QTableView(self.centralwidget)
-        self.reg_table.setGeometry(QtCore.QRect(920, 10, 321, 591))
+        self.reg_table.setGeometry(QtCore.QRect(840, 10, 401, 601))
+        self.reg_table.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.CrossCursor))
         self.reg_table.setObjectName("reg_table")
         self.memory_table = QtWidgets.QTableView(self.centralwidget)
-        self.memory_table.setGeometry(QtCore.QRect(20, 280, 871, 321))
+        self.memory_table.setGeometry(QtCore.QRect(20, 280, 681, 321))
+        self.memory_table.viewport().setProperty("cursor", QtGui.QCursor(QtCore.Qt.CrossCursor))
         self.memory_table.setObjectName("memory_table")
+        self.update_reg_tbl_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.update_reg_tbl_btn.setGeometry(QtCore.QRect(250, 10, 101, 31))
+        self.update_reg_tbl_btn.setObjectName("update_reg_tbl_btn")
+        self.command_entry = QtWidgets.QLineEdit(self.centralwidget)
+        self.command_entry.setGeometry(QtCore.QRect(60, 10, 161, 31))
+        self.command_entry.setObjectName("command_entry")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(420, 10, 71, 31))
+        self.label.setObjectName("label")
+        self.instruction_output_lbl = QtWidgets.QLabel(self.centralwidget)
+        self.instruction_output_lbl.setGeometry(QtCore.QRect(500, 10, 281, 31))
+        self.instruction_output_lbl.setAutoFillBackground(True)
+        self.instruction_output_lbl.setText("")
+        self.instruction_output_lbl.setObjectName("instruction_output_lbl")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1256, 21))
@@ -37,7 +53,9 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "VLQRISC Simulator"))
+        self.update_reg_tbl_btn.setText(_translate("MainWindow", "Update"))
+        self.label.setText(_translate("MainWindow", "Instruction:"))
 
 
 if __name__ == "__main__":
