@@ -14,7 +14,11 @@ class FWISliceError(Exception):
     pass
 
 
-class FWIbase():
+class FWIbc():
+    """
+    Base class for the fixed width integer 
+    """
+
     def __init__(self, int: int, width: int = 16) -> None:
         self.width = width
         self.int = int
@@ -35,8 +39,12 @@ class FWIbase():
                 most_significant = key.start
                 if 0 <= most_significant < least_significant < self.width:
                     string = reversed_bits[most_significant:least_significant][::-1]
-                elif 0 <= most_significant < least_significant < self.width:
+                elif 0 <= most_significant < least_significant == self.width:
                     string = reversed_bits[most_significant:][::-1]
+                else:
+                    raise FWISliceError(
+                        "Slice not formatted correctly")
+
             else:
                 if key.stop is None and key.start is None:
                     string = self.bits[:]
@@ -57,7 +65,7 @@ class FWIbase():
             raise TypeError("Invalid argument type.")
 
 
-class FWI(FWIbase):
+class FWI(FWIbc):
     def __init__(self, int: int, width: int = 16) -> None:
         super().__init__(int, width)
         self._lower = -2**(width-1)
@@ -76,7 +84,7 @@ class FWI(FWIbase):
         return cls(signed_bin_str_to_int(binary_string), len(binary_string))
 
 
-class FWI_unsigned(FWIbase):
+class FWI_unsigned(FWIbc):
     def __init__(self, int: int, width: int = 16) -> None:
         super().__init__()
         self._lower = 0
