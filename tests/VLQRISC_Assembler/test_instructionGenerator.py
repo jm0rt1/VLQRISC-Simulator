@@ -26,7 +26,7 @@ class TestInstructionGenerator(unittest.TestCase):
         expected = Operations.ADD_REGS.value.op_code_str + \
             rd+rs1+rs2+("0"*13)
 
-        self.assertEqual(instruction, expected)
+        self.assertEqual(instruction.bits, expected)
 
         line_parser = parser.LineParser("$t0=$t2&$s0")
         line_data = line_parser.parse()
@@ -41,7 +41,7 @@ class TestInstructionGenerator(unittest.TestCase):
         expected = Operations.AND_REGS.value.op_code_str + \
             rd+rs1+rs2+("0"*13)
 
-        self.assertEqual(instruction, expected)
+        self.assertEqual(instruction.bits, expected)
 
         line_parser = parser.LineParser("$t0=$t2|$s1")
         line_data = line_parser.parse()
@@ -56,7 +56,7 @@ class TestInstructionGenerator(unittest.TestCase):
         expected = Operations.OR_REGS.value.op_code_str + \
             rd+rs1+rs2+("0"*13)
 
-        self.assertEqual(instruction, expected)
+        self.assertEqual(instruction.bits, expected)
 
     def test_loop(self):
 
@@ -76,6 +76,9 @@ class TestInstructionGenerator(unittest.TestCase):
             if scheme.rs2:
                 rs2 = convert_int_bin_str(
                     convert_reg_common_name_to_number(scheme.rs2), 4)
+            if scheme.immediate_operand:
+                immediate_str = convert_int_bin_str(
+                    scheme.immediate_operand, 16)
 
             opcode = scheme.op_code_str
 
@@ -83,10 +86,12 @@ class TestInstructionGenerator(unittest.TestCase):
                 pass
             if line_data.type == OpTypes.GPR_GPR:
                 expected_instruction = opcode+rd+rs1+rs2+"0"*13
+            elif line_data.type == OpTypes.NUM_GPR:
+                expected_instruction = opcode+rd+rs1+immediate_str
             else:
                 raise Exception("Type not found")
 
-            self.assertEqual(instruction, expected_instruction)
+            self.assertEqual(instruction.bits, expected_instruction)
 
 
 @ dataclass(frozen=True)
@@ -97,11 +102,14 @@ class Scheme():
     rs1: Optional[str]
     rs2: Optional[str]
     op_code_str: str
+    immediate_operand: Optional[int]
 
 
 io_schemes = [
     Scheme("$s4=$s2+$s1", "$s4", "$s2", "$s1",
-           Operations.ADD_REGS.value.op_code_str),
+           Operations.ADD_REGS.value.op_code_str, None),
     Scheme("$s3=$t2  | $t3", "$s3", "$t2",
-           "$t3", Operations.OR_REGS.value.op_code_str)
+           "$t3", Operations.OR_REGS.value.op_code_str, None),
+    Scheme("$s4=$s2+200000000000000000000000", "$s4", "$s2", None,
+           Operations.ADD_REG_TO_NUM.value.op_code_str, 300)
 ]

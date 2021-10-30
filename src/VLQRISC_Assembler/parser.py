@@ -1,6 +1,6 @@
 from __future__ import annotations
 from typing import Optional, Tuple
-from src.Shared.fwi import FWI_unsigned
+from src.Shared.fwi import FWI_unsigned, FWIOverFlow
 from src.VLQRISC_Simulator import hw_definitions
 
 import src.VLQRISC_Assembler.operations as operations
@@ -57,6 +57,8 @@ class LineParser():
                     self.line_data.immediate_operand = FWI_unsigned(int(
                         self.line_data.tokenized_line[4]))
                     self.line_data.Rs1_common_name = self.line_data.tokenized_line[2]
+                except FWIOverFlow:
+                    raise
                 except:
                     if self.line_data.immediate_operand is None or self.line_data.Rs1_common_name is None:
                         raise InvalidOperationInput(
