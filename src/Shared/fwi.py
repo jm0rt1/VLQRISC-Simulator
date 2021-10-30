@@ -86,7 +86,7 @@ class FWI(FWIbc):
 
 class FWI_unsigned(FWIbc):
     def __init__(self, int: int, width: int = 16) -> None:
-        super().__init__()
+        super().__init__(int, width)
         self._lower = 0
         self._upper = (2**(width))-1
         if not(self._lower <= int <= self._upper):
