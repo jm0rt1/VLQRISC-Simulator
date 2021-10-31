@@ -53,3 +53,18 @@ class testFWI(unittest.TestCase):
         expected_bits = "01100"
         self.assertEqual(expected_int, fwi.int)
         self.assertEqual(expected_bits, fwi.bits)
+
+    def test_add(self):
+
+        a = FWI.from_binary_str("01100")
+        b = FWI.from_binary_str("00001")
+
+        c = a+b
+
+        self.assertEqual(c.bits, "01101")
+
+        a = FWI.from_binary_str("01100")
+        b = FWI.from_binary_str("00001")
+
+        c = b+a
+        self.assertEqual(c.bits, "01101")
