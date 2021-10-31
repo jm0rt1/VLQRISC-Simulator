@@ -5,6 +5,14 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Run Main",
+            "type": "python",
+            "request": "launch",
+            "program": "main.py",
+            "envFile": "${workspaceFolder}/.venv",
+            "console": "internalConsole",
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
