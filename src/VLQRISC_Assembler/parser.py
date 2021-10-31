@@ -49,13 +49,13 @@ class LineParser():
                 self.line_data.Rs1_common_name = None
             try:
                 self.line_data.immediate_operand = FWI_unsigned(int(
-                    self.line_data.tokenized_line[2]), 12)
+                    self.line_data.tokenized_line[2]), 19)
                 self.line_data.Rs1_common_name = self.line_data.tokenized_line[4]
 
             except:
                 try:
                     self.line_data.immediate_operand = FWI_unsigned(int(
-                        self.line_data.tokenized_line[4]))
+                        self.line_data.tokenized_line[4]), 19)
                     self.line_data.Rs1_common_name = self.line_data.tokenized_line[2]
                 except FWIOverFlow:
                     raise
