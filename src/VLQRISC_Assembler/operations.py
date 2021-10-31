@@ -1,5 +1,8 @@
 from __future__ import annotations
 import enum
+from typing import Any
+
+from src.Shared.fwi import FWI_unsigned
 
 
 class ReplacementTokens(str, enum.Enum):
@@ -16,16 +19,21 @@ class OpTypes(str, enum.Enum):
 
 
 class Operation():
-    def __init__(self, name: str,  syntax_tokens: list[list[str]], type: OpTypes, op_code: int):
+    def __init__(self, name: str,  syntax_tokens: list[list[str]], type: OpTypes, op_code: int, cpu_operation: Any = None):
         self.name = name
         self.syntax_tokens = syntax_tokens
         self.type = type
         self.op_code = op_code
+        self.cpu_operation = cpu_operation
 
     @property
     def op_code_str(self):
         string = bin(self.op_code)
         return string[2:].zfill(5)
+
+    @property
+    def op_code_fwi(self):
+        return FWI_unsigned(self.op_code, 5)
 
     def __str__(self):
         return f"""{self.name}: Opcode = {self.op_code_str} {self.syntax_tokens}"""
