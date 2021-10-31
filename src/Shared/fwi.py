@@ -1,5 +1,7 @@
 # fwi = Fixed Width Integers
 from __future__ import annotations
+from abc import abstractmethod
+from typing import Union
 from src.Shared.utils import convert_int_bin_str, int_to_sign_extended_bin_str, signed_bin_str_to_int, unsigned_bin_str_to_int
 import copy
 
@@ -27,11 +29,16 @@ class FWIbc():
         self.width = width
         self.int = int
 
+    @property
+    @abstractmethod
+    def bits(self) -> str:
+        pass
+
     @classmethod
     def from_binary_str(cls, binary_string: str):
         return cls(unsigned_bin_str_to_int(binary_string), len(binary_string))
 
-    def __getitem__(self, key):
+    def __base_getitem__(self, key: Union[slice, int]) -> str:
         if isinstance(key, slice):
 
             if key.step != 1 and key.step is not None:
@@ -64,16 +71,16 @@ class FWIbc():
                 else:
                     least_significant = key.stop
                     string = reversed_bits[:least_significant][::-1]
+            return string
 
-            return FWI.from_binary_str(string)
-
-        elif isinstance(key, int):
-            if key < 0:  # Handle negative indices
-                key += len(self)
-            if 0 <= key < self.width:
-                return self.bits[key]  # Get the data from elsewhere
         else:
-            raise TypeError("Invalid argument type.")
+            if key < 0:  # Handle negative indices
+                key += len(self.bits)
+            if 0 <= key < self.width:
+                return self.bits[key]
+            else:
+                raise FWISliceError(
+                    f"Slice cannot be obtained with the given key = {key}")
 
 
 class FWI(FWIbc):
@@ -85,19 +92,26 @@ class FWI(FWIbc):
             raise FWIOverFlow(
                 "Fixed int passed in with fixed width integer exceeds limits")
 
+    def __getitem__(self, key: Union[slice, int]):
+        string = super().__base_getitem__(key)
+        return FWI.from_binary_str(string)
+
     def __add__(self, other: FWI):
         if self.width != other.width:
             raise FWIOperationError(
                 "Addition of numbers that are different widths is not allowed, please convert before adding")
         return FWI(other.int+self.int, self.width)
 
-    def __radd__(self, other):
+    def __radd__(self, other: FWI):
         return self.__add__(other)
 
-    def __sub__(self, other):
+    def __sub__(self, other: FWI):
         return self.__add__(-other)
 
-    def __rsub__(self, other):
+    def __neg__(self):
+        return FWI(-self.int, self.width)
+
+    def __rsub__(self, other: FWI):
         raise FWIOperationError("Subtraction on left not allowed")
 
     @property
@@ -108,6 +122,10 @@ class FWI(FWIbc):
     def from_binary_str(cls, binary_string: str):
 
         return cls(signed_bin_str_to_int(binary_string), len(binary_string))
+
+    @classmethod
+    def from_unsigned(cls, fwi: FWI_unsigned):
+        return cls.from_binary_str(fwi.bits)
 
 
 class FWI_unsigned(FWIbc):
@@ -121,6 +139,28 @@ class FWI_unsigned(FWIbc):
         self.width = width
         self.int = int
 
+    def __getitem__(self, key: Union[slice, int]):
+        string = super().__base_getitem__(key)
+        return FWI_unsigned.from_binary_str(string)
+
+    def __add__(self, other: FWI_unsigned):
+        if self.width != other.width:
+            raise FWIOperationError(
+                "Addition of numbers that are different widths is not allowed, please convert before adding")
+        return FWI_unsigned(other.int+self.int, self.width)
+
+    def __radd__(self, other: FWI_unsigned):
+        return self.__add__(other)
+
+    def __sub__(self, other: FWI_unsigned):
+        return self.__add__(-other)
+
+    def __neg__(self):
+        return FWI_unsigned(-self.int, self.width)
+
+    def __rsub__(self, other: FWI_unsigned):
+        raise FWIOperationError("Subtraction on left not allowed")
+
     @property
     def bits(self) -> str:
         return convert_int_bin_str(self.int, self.width)
@@ -131,4 +171,4 @@ class FWI_unsigned(FWIbc):
 
     @classmethod
     def from_signed(cls, fwi: FWI):
-        return cls().from_binary_str(fwi.bits)
+        return cls.from_binary_str(fwi.bits)
