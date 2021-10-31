@@ -17,7 +17,9 @@ REGISTER_NAMES = ["$zero",
                   "$s4",
                   "$a0",
                   "$a1",
-                  "$v0"]
+                  "$v0",
+                  "$sp",
+                  "$pc"]
 
 MEMORY_SIZE = 2 ** 16  # 2^16 Bytes
 
