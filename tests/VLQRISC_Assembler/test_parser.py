@@ -3,8 +3,8 @@ from typing import Optional
 import unittest
 from src.VLQRISC_Simulator.hw_definitions import convert_reg_common_name_to_number
 import src.VLQRISC_Assembler.parser as parser
-import src.VLQRISC_Assembler.operations as operations
-from src.VLQRISC_Assembler.operations import Operations
+import src.VLQRISC_Simulator.system as operations
+from src.VLQRISC_Simulator.system import Operations
 from dataclasses import dataclass
 
 

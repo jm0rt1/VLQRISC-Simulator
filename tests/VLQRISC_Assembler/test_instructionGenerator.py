@@ -3,7 +3,7 @@ from typing import Optional
 import unittest
 from src.Shared.utils import convert_int_bin_str
 
-from src.VLQRISC_Assembler.operations import Operations, OpTypes
+from src.VLQRISC_Simulator.system import Operations, OpTypes
 
 from src.VLQRISC_Simulator.hw_definitions import convert_reg_common_name_to_number
 import src.VLQRISC_Assembler.instructionGenerator as instructionGenerator

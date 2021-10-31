@@ -1,9 +1,9 @@
 
 import src.VLQRISC_Assembler.parser as parser
-import src.VLQRISC_Assembler.operations as operations
+import src.VLQRISC_Simulator.system as operations
 
 from src.Shared.fwi import FWI_unsigned
-from src.VLQRISC_Simulator.instruction import Instruction
+from src.VLQRISC_Simulator.system import Instruction
 
 
 class MissingOpcode(Exception):
@@ -18,7 +18,7 @@ class InstructionGenerator():
     def __init__(self, line_data: parser.LineData) -> None:
         self.line_data = line_data
 
-    def generate(self):
+    def generate(self) -> Instruction:
         self.__generate_binary_strings()
 
         if self.line_data.type == operations.OpTypes.GPR_GPR:

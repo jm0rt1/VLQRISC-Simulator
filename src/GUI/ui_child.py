@@ -1,4 +1,5 @@
 from __future__ import annotations
+from unittest.signals import registerResult
 from PyQt5 import QtWidgets
 
 from PyQt5.QtWidgets import QHeaderView
@@ -29,15 +30,9 @@ class Ui_MainWindow_child(ui_base.Ui_MainWindow):
         lp = parser.LineParser(command)
         line_data = lp.parse()
         instruction_generator = ir.InstructionGenerator(line_data)
-        instruction_fwi = instruction_generator.generate()
-        self.instruction_output_lbl.setText(instruction_fwi.bits)
-
-        data = []
-        for i in range(0, 10):
-            data.append([])
-
-            for j in range(0, 2):
-                data[i].append(random.randint(1, 100))
+        instruction = instruction_generator.generate()
+        self.system.execute(instruction)
+        self.instruction_output_lbl.setText(instruction.fwi.bits)
 
         self.model = tableModel.TableModel(self.system.register_table_bits)
         self.reg_table.setModel(self.model)

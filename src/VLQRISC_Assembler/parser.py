@@ -3,7 +3,7 @@ from typing import Optional, Tuple
 from src.Shared.fwi import FWI_unsigned, FWIOverFlow
 from src.VLQRISC_Simulator import hw_definitions
 
-import src.VLQRISC_Assembler.operations as operations
+import src.VLQRISC_Simulator.system as operations
 from src.VLQRISC_Simulator.hw_definitions import REGISTER_NAMES
 import copy
 

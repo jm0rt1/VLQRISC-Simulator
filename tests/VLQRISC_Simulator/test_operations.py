@@ -1,5 +1,5 @@
 import unittest
-import src.VLQRISC_Assembler.operations as operations
+import src.VLQRISC_Simulator.system as operations
 
 
 class TestOperations(unittest.TestCase):

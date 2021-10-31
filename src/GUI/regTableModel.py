@@ -1,4 +1,4 @@
-
+from __future__ import annotations
 import typing
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
@@ -10,7 +10,7 @@ class TableModel(QtCore.QAbstractTableModel):
     https://www.pythonguis.com/tutorials/qtableview-modelviews-numpy-pandas/
     """
 
-    def __init__(self, data):
+    def __init__(self, data: list[list[str]]):
         super(TableModel, self).__init__()
         self._data = data
 

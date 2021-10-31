@@ -97,10 +97,8 @@ class FWI(FWIbc):
         return FWI.from_binary_str(string)
 
     def __add__(self, other: FWI):
-        if self.width != other.width:
-            raise FWIOperationError(
-                "Addition of numbers that are different widths is not allowed, please convert before adding")
-        return FWI(other.int+self.int, self.width)
+        new_width = max(self.width, other.width)
+        return FWI(other.int+self.int, new_width)
 
     def __radd__(self, other: FWI):
         return self.__add__(other)
@@ -144,10 +142,8 @@ class FWI_unsigned(FWIbc):
         return FWI_unsigned.from_binary_str(string)
 
     def __add__(self, other: FWI_unsigned):
-        if self.width != other.width:
-            raise FWIOperationError(
-                "Addition of numbers that are different widths is not allowed, please convert before adding")
-        return FWI_unsigned(other.int+self.int, self.width)
+        new_width = max(self.width, other.width)
+        return FWI_unsigned(other.int+self.int, new_width)
 
     def __radd__(self, other: FWI_unsigned):
         return self.__add__(other)
