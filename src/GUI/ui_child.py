@@ -1,8 +1,11 @@
 from __future__ import annotations
+from PyQt5 import QtWidgets
+
+from PyQt5.QtWidgets import QHeaderView
 import src.GUI.ui_base as ui_base
 
 import random
-import src.GUI.tableModel as tableModel
+import src.GUI.regTableModel as tableModel
 import src.VLQRISC_Assembler.parser as parser
 import src.VLQRISC_Assembler.instructionGenerator as ir
 from src.VLQRISC_Simulator.system import VLQRISC_System
@@ -38,3 +41,7 @@ class Ui_MainWindow_child(ui_base.Ui_MainWindow):
 
         self.model = tableModel.TableModel(self.system.register_table_bits)
         self.reg_table.setModel(self.model)
+
+        header = self.reg_table.horizontalHeader()
+        header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
