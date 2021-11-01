@@ -112,6 +112,24 @@ class FWI(FWIbc):
     def __rsub__(self, other: FWI):
         raise FWIOperationError("Subtraction on left not allowed")
 
+    def __lt__(self, other: FWI):
+        return self.int < other.int
+
+    def __le__(self, other: FWI):
+        return self.int <= other.int
+
+    def __gt__(self, other: FWI):
+        return self.int > other.int
+
+    def __ge__(self, other: FWI):
+        return self.int >= other.int
+
+    def __eq__(self, other: FWI):
+        return self.int == other.int
+
+    def __ne__(self, other: FWI):
+        return self.int != other.int
+
     @property
     def bits(self) -> str:
         return int_to_sign_extended_bin_str(self.int, self.width)
@@ -120,6 +138,10 @@ class FWI(FWIbc):
     def from_binary_str(cls, binary_string: str):
 
         return cls(signed_bin_str_to_int(binary_string), len(binary_string))
+
+    @classmethod
+    def new_width(cls, fwi: FWI, width: int = 16):
+        return cls(fwi.int, width)
 
     @classmethod
     def from_unsigned(cls, fwi: FWI_unsigned):
@@ -157,6 +179,24 @@ class FWI_unsigned(FWIbc):
     def __rsub__(self, other: FWI_unsigned):
         raise FWIOperationError("Subtraction on left not allowed")
 
+    def __lt__(self, other: FWI_unsigned):
+        return self.int < other.int
+
+    def __le__(self, other: FWI_unsigned):
+        return self.int <= other.int
+
+    def __gt__(self, other: FWI_unsigned):
+        return self.int > other.int
+
+    def __ge__(self, other: FWI_unsigned):
+        return self.int >= other.int
+
+    def __eq__(self, other: FWI_unsigned):
+        return self.int == other.int
+
+    def __ne__(self, other: FWI_unsigned):
+        return self.int != other.int
+
     @property
     def bits(self) -> str:
         return convert_int_bin_str(self.int, self.width)
@@ -164,6 +204,19 @@ class FWI_unsigned(FWIbc):
     @classmethod
     def from_binary_str(cls, binary_string: str):
         return cls(unsigned_bin_str_to_int(binary_string), len(binary_string))
+
+    @classmethod
+    def new_width(cls, fwi: FWI_unsigned, width: int = 16):
+        return cls(fwi.int, width)
+
+    @classmethod
+    def address_from_binary_str(cls, str_address: str):
+        if str_address[-2:] != "00":
+            raise Exception(
+                "binary string not divisible by 4, all addresses are by 32 bit words, and therefore must be divisible by 4.")
+        if len(str_address) > 16:
+            raise Exception("addresses must be 16 bits")
+        return cls(unsigned_bin_str_to_int(str_address), 16)
 
     @classmethod
     def from_signed(cls, fwi: FWI):
