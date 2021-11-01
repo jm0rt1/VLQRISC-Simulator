@@ -91,6 +91,20 @@ class VLQRISC_System():
                     string += "0"
             return FWI_unsigned.from_binary_str(string)
 
+    class PROGRAM_CONTROL():
+        def __init__(self):
+            self.a = None  # input
+            self.b = None  # input
+            self.c = None
+
+        def set_operands(self, a: Union[FWI, FWI_unsigned], b: Union[FWI, FWI_unsigned]):
+            self.a = a  # input
+            self.b = b  # input
+
+        def update_pc(self, new_address: FWI_unsigned, program_counter: VLQRISC_System.REGISTER):
+
+            program_counter.set_automatic(new_address)
+
     def __init__(self):
         self.memory_table = []
         self.memory_table = [FWI_unsigned(0, 8)] * MEMORY_SIZE
