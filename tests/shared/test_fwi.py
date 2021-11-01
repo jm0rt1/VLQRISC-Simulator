@@ -68,3 +68,18 @@ class testFWI(unittest.TestCase):
 
         c = b+a
         self.assertEqual(c.bits, "01101")
+
+    def test_gt_lt_eq(self):
+
+        a = FWI.from_binary_str("01100")
+        b = FWI.from_binary_str("00001")
+
+        self.assertEqual(a > b, True)
+        self.assertEqual(b > a, False)
+        self.assertEqual(b < a, True)
+        self.assertEqual(a >= b, True)
+        self.assertEqual(b >= a, False)
+        self.assertEqual(b <= a, True)
+        self.assertEqual(a == b, False)
+        self.assertEqual(b == a, False)
+        self.assertEqual(b != a, True)
