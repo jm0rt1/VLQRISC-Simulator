@@ -69,6 +69,18 @@ class VLQRISC_System():
                     string += "0"
             return FWI_unsigned.from_binary_str(string)
 
+        def LT(self, a: FWI, b: FWI) -> bool:
+            return a < b
+
+        def GT(self, a: FWI, b: FWI) -> bool:
+            return a > b
+
+        def LE(self, a: FWI, b: FWI) -> bool:
+            return a <= b
+
+        def GE(self, a: FWI, b: FWI) -> bool:
+            return a >= b
+
         def XOR(self, a: FWI_unsigned, b: FWI_unsigned) -> FWI_unsigned:
             self.set_operands(a, b)
             string = ""
