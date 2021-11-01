@@ -38,5 +38,7 @@ io_schemes = [
            Operations.ADD_REGS.value.op_code_str, None),
     Scheme("$s3=$t2  | $t3", "$s3", "$t2",
            "$t3", Operations.OR_REGS.value.op_code_str, None),
+    Scheme("if($s0>$s1)j 0b100", None, "$s0",
+           "$s1", Operations.OR_REGS.value.op_code_str, None),
 
 ]

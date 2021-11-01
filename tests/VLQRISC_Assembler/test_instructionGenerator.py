@@ -33,12 +33,16 @@ class TestInstructionGenerator(unittest.TestCase):
             if scheme.immediate_operand:
                 immediate_str = convert_int_bin_str(
                     scheme.immediate_operand, 19)
-
+            if scheme.jump_address:
+                jump_address = convert_int_bin_str(
+                    scheme.jump_address, 16)
             opcode = scheme.op_code_str
 
-            if line_data.type == OpTypes.UNCOND_BRANCH:
-                pass
-            if line_data.type == OpTypes.GPR_GPR:
+            if line_data.type == OpTypes.COMP_BRANCH:
+                expected_instruction = opcode+rs1+rs2+"000"+jump_address  # type:ignore
+                expected_segments = [opcode, rs1, rs2,  # type:ignore
+                                     jump_address]  # type:ignore
+            elif line_data.type == OpTypes.GPR_GPR:
                 expected_instruction = opcode+rd+rs1+rs2+"0"*15  # type:ignore
                 expected_segments = [opcode, rd,  # type:ignore
                                      rs1, rs2, "0"*15]  # type:ignore
@@ -46,6 +50,7 @@ class TestInstructionGenerator(unittest.TestCase):
                 expected_instruction = opcode+rd+rs1+immediate_str  # type:ignore
                 expected_segments = [opcode, rd, rs1,  # type:ignore
                                      immediate_str]  # type:ignore
+
             else:
                 raise Exception("Type not found")
 
@@ -65,14 +70,16 @@ class Scheme():
     rs2: Optional[str]
     op_code_str: str
     immediate_operand: Optional[int]
+    jump_address: Optional[int]
 
 
 io_schemes = [
     Scheme("$s4=$s2+300", "$s4", "$s2", None,
-           Operations.ADD_REG_TO_NUM.value.op_code_str, 300),
+           Operations.ADD_REG_TO_NUM.value.op_code_str, 300, None),
     Scheme("$s4=$s2+$s1", "$s4", "$s2", "$s1",
-           Operations.ADD_REGS.value.op_code_str, None),
+           Operations.ADD_REGS.value.op_code_str, None, None),
     Scheme("$s3=$t2  | $t3", "$s3", "$t2",
-           "$t3", Operations.OR_REGS.value.op_code_str, None),
-
+           "$t3", Operations.OR_REGS.value.op_code_str, None, None),
+    Scheme("if($s0>$s1)j 0b100", None, "$s0", "$s1",
+           Operations.BRANCH_GT.value.op_code_str, None, 4)
 ]
