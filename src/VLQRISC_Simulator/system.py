@@ -111,10 +111,12 @@ class VLQRISC_System():
 
         self.register_table: list[VLQRISC_System.REGISTER] = []
         for i, name in enumerate(REGISTER_NAMES):
+
             self.register_table.append(
                 self.REGISTER(name, i))
 
         self.alu = self.ALU()
+        self.program_control = self.PROGRAM_CONTROL()
 
     @property
     def register_table_bits(self) -> list[tuple[str, str]]:
