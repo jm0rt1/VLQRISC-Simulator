@@ -174,7 +174,10 @@ class VLQRISC_System():
                 self.program_control.update_pc(
                     jump_address, self.register_table[hw_definitions.convert_reg_common_name_to_number("$pc")])
                 pass
-
+        elif instruction.type == OpTypes.UNCOND_BRANCH:
+            jump_address = segments[1]
+            self.program_control.update_pc(
+                jump_address, self.register_table[hw_definitions.convert_reg_common_name_to_number("$pc")])
         pass
 
 
@@ -293,5 +296,7 @@ class Instruction():
             return [self.fwi[27:31], self.fwi[23:26], self.fwi[19:22], FWI.from_unsigned(self.fwi[0:18])]
         elif self.type == OpTypes.COMP_BRANCH:
             return [self.fwi[27:31], self.fwi[23:26], self.fwi[19:22], self.fwi[0:15]]
+        elif self.type == OpTypes.UNCOND_BRANCH:
+            return [self.fwi[27:31], self.fwi[0: 15]]
         else:
             return [self.fwi]

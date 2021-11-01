@@ -27,6 +27,9 @@ class InstructionGenerator():
             return self.__generate_NUM_GPR_inst()
         elif self.line_data.type == operations.OpTypes.COMP_BRANCH:
             return self.__generate_COMP_BRANCH_inst()
+        elif self.line_data.type == operations.OpTypes.UNCOND_BRANCH:
+            return self.__generate_UNCOND_BRANCH()
+
         else:
             raise OpTypeNotRecognized("Instruction type not implemented")
 
@@ -55,6 +58,15 @@ class InstructionGenerator():
         return Instruction(FWI_unsigned.from_binary_str(f"{self.opcode}{self.Rd}{self.Rs1}{self.immediate_operand}"), operations.OpTypes.NUM_GPR)
 
     def __generate_COMP_BRANCH_inst(self):
+        jump_address = self.get_jump_address()
+        return Instruction(FWI_unsigned.from_binary_str(f"{self.opcode}{self.Rs1}{self.Rs2}000{jump_address.bits}"), operations.OpTypes.COMP_BRANCH)
+
+    def __generate_UNCOND_BRANCH(self):
+        jump_address = self.get_jump_address()
+        zeros = "0"*11
+        return Instruction(FWI_unsigned.from_binary_str(f"{self.opcode}{zeros}{jump_address.bits}"), operations.OpTypes.UNCOND_BRANCH)
+
+    def get_jump_address(self):
         jump_address: FWI_unsigned
         if self.jump_address_str[0:2] == "0b":
             if self.jump_address_str:
@@ -65,10 +77,10 @@ class InstructionGenerator():
             raise NotImplementedError("Hexadecimal input is not implemented")
             # assume
         else:
-            #decimal or label
+            # decimal or label
             if self.jump_address_str.isnumeric():
                 jump_address = FWI_unsigned(int(self.jump_address_str), 16)
             else:
                 raise NotImplementedError("Labels input is not implemented")
 
-        return Instruction(FWI_unsigned.from_binary_str(f"{self.opcode}{self.Rs1}{self.Rs2}000{jump_address.bits}"), operations.OpTypes.COMP_BRANCH)
+        return jump_address

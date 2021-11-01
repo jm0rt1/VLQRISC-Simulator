@@ -50,7 +50,9 @@ class TestInstructionGenerator(unittest.TestCase):
                 expected_instruction = opcode+rd+rs1+immediate_str  # type:ignore
                 expected_segments = [opcode, rd, rs1,  # type:ignore
                                      immediate_str]  # type:ignore
-
+            elif line_data.type == OpTypes.UNCOND_BRANCH:
+                expected_instruction = opcode + "0"*11+jump_address  # type:ignore
+                expected_segments = [opcode, jump_address]  # type:ignore
             else:
                 raise Exception("Type not found")
 
@@ -74,6 +76,8 @@ class Scheme():
 
 
 io_schemes = [
+    Scheme("j 100", None, None, None,
+           Operations.JUMP.value.op_code_str, None, 100),
     Scheme("$s4=$s2+300", "$s4", "$s2", None,
            Operations.ADD_REG_TO_NUM.value.op_code_str, 300, None),
     Scheme("$s4=$s2+$s1", "$s4", "$s2", "$s1",
@@ -82,4 +86,5 @@ io_schemes = [
            "$t3", Operations.OR_REGS.value.op_code_str, None, None),
     Scheme("if($s0>$s1)j 0b100", None, "$s0", "$s1",
            Operations.BRANCH_GT.value.op_code_str, None, 4)
+
 ]

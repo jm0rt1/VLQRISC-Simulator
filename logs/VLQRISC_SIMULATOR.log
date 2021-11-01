@@ -1,0 +1,36 @@
+invalid line of input f
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 37, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 132, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input f
+Instruction type not implemented
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    instruction = instruction_generator.generate()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 31, in generate
+    raise OpTypeNotRecognized("Instruction type not implemented")
+src.VLQRISC_Assembler.instructionGenerator.OpTypeNotRecognized: Instruction type not implemented
+list index out of range
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    self.system.execute(instruction)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 178, in execute
+    jump_address = segments[2]
+IndexError: list index out of range
+Fixed int passed in with fixed width integer exceeds limits
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    instruction = instruction_generator.generate()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 31, in generate
+    return self.__generate_UNCOND_BRANCH()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 65, in __generate_UNCOND_BRANCH
+    jump_address = self.get_jump_address()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 82, in get_jump_address
+    jump_address = FWI_unsigned(int(self.jump_address_str), 16)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/Shared/fwi.py", line 158, in __init__
+    "Fixed int passed in with fixed width integer exceeds limits")
+src.Shared.fwi.FWIOverFlow: Fixed int passed in with fixed width integer exceeds limits

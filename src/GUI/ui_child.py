@@ -1,4 +1,5 @@
 from __future__ import annotations
+import logging
 from unittest.signals import registerResult
 from PyQt5 import QtWidgets
 
@@ -20,7 +21,7 @@ class Ui_MainWindow_child(ui_base.Ui_MainWindow):
         self.system = VLQRISC_System()
         self.update_reg_tbl_btn.clicked.connect(self.update)
         self.command_entry.setClearButtonEnabled(True)
-
+        self.logger = logging.getLogger()
         self.update_reg_table()
 
     def setupUi(self, MainWindow):
@@ -36,17 +37,22 @@ class Ui_MainWindow_child(ui_base.Ui_MainWindow):
             line_data = lp.parse()
         except Exception as e:
             self.error_label.setText(str(e))
+            self.logger.exception(e)
             return
         instruction_generator = ir.InstructionGenerator(line_data)
         try:
             instruction = instruction_generator.generate()
         except Exception as e:
             self.error_label.setText(str(e))
+            self.logger.exception(e)
+
             return
         try:
             self.system.execute(instruction)
         except Exception as e:
             self.error_label.setText(str(e))
+            self.logger.exception(e)
+
             return
         self.error_label.setText("Success!")
 
