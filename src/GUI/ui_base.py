@@ -46,6 +46,7 @@ class Ui_MainWindow(object):
         self.error_label.setStyleSheet("QLabel{border: 1px solid black;}")
         self.error_label.setText("")
         self.error_label.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.error_label.setWordWrap(True)
         self.error_label.setObjectName("error_label")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
         self.label_2.setGeometry(QtCore.QRect(20, 50, 181, 20))
