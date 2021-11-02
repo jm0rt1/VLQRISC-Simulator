@@ -2,8 +2,8 @@
 import src.VLQRISC_Assembler.parser as parser
 import src.VLQRISC_Simulator.system as operations
 
-from src.Shared.fwi import FWI_unsigned, FWI
-from src.VLQRISC_Simulator.system import Instruction, OpTypes, Operations
+from src.Shared.fwi import FWI_unsigned
+from src.VLQRISC_Simulator.system import Instruction
 
 
 class MissingOpcode(Exception):
