@@ -34,3 +34,28 @@ Traceback (most recent call last):
   File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/Shared/fwi.py", line 158, in __init__
     "Fixed int passed in with fixed width integer exceeds limits")
 src.Shared.fwi.FWIOverFlow: Fixed int passed in with fixed width integer exceeds limits
+__init__() takes 1 positional argument but 4 were given
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    self.system.execute(instruction)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 172, in execute
+    result = cpu_operation_alu(self.alu, rs1.s, rs2.s)
+TypeError: __init__() takes 1 positional argument but 4 were given
+__init__() takes 1 positional argument but 4 were given
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    self.system.execute(instruction)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 172, in execute
+    result = cpu_operation_alu(self.alu, rs1.s, rs2.s)
+TypeError: __init__() takes 1 positional argument but 4 were given
+Subscripted generics cannot be used with class and instance checks
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    self.system.execute(instruction)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 177, in execute
+    if isinstance(cpu_operation_alu, signed_alu_op):
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/typing.py", line 708, in __instancecheck__
+    return self.__subclasscheck__(type(obj))
+  File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/typing.py", line 716, in __subclasscheck__
+    raise TypeError("Subscripted generics cannot be used with"
+TypeError: Subscripted generics cannot be used with class and instance checks
