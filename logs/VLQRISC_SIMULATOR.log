@@ -59,3 +59,59 @@ Traceback (most recent call last):
   File "/Library/Frameworks/Python.framework/Versions/3.7/lib/python3.7/typing.py", line 716, in __subclasscheck__
     raise TypeError("Subscripted generics cannot be used with"
 TypeError: Subscripted generics cannot be used with class and instance checks
+invalid line of input sw $s1
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 37, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 141, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input sw $s1
+invalid line of input sw $s1
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 37, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 141, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input sw $s1
+list indices must be integers or slices, not FWI_unsigned
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    self.system.execute(instruction)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 207, in execute
+    reg.to_execute(self, instruction, alu_op_s, alu_op_u)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 258, in __MEMORY
+    register = self.register_table[instruction.segments[1]]
+TypeError: list indices must be integers or slices, not FWI_unsigned
+list indices must be integers or slices, not FWI_unsigned
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    self.system.execute(instruction)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 207, in execute
+    reg.to_execute(self, instruction, alu_op_s, alu_op_u)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 258, in __MEMORY
+    register = self.register_table[instruction.segments[1]]
+TypeError: list indices must be integers or slices, not FWI_unsigned
+'Operation' object has no attribute 'mmu_op'
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    self.system.execute(instruction)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 199, in execute
+    mmu_op: Optional[mmu_op_callable] = op.value.mmu_op
+AttributeError: 'Operation' object has no attribute 'mmu_op'
+int() can't convert non-string with explicit base
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    self.system.execute(instruction)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 208, in execute
+    reg.to_execute(self, instruction, alu_op_s, alu_op_u, mmu_op)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 262, in __MEMORY
+    self.mmu, FWI_unsigned.from_binary_str(address), register)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/Shared/fwi.py", line 206, in from_binary_str
+    return cls(unsigned_bin_str_to_int(binary_string), len(binary_string))
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/Shared/utils.py", line 98, in unsigned_bin_str_to_int
+    return int(string, 2)
+TypeError: int() can't convert non-string with explicit base

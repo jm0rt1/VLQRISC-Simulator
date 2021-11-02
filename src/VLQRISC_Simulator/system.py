@@ -134,12 +134,12 @@ class REGISTER():
             self.set_unsigned(value)
 
 
-signed_alu_op = Callable[[ALU, FWI, FWI],
-                         Union[bool, FWI]]
+signed_alu_op_callable = Callable[[ALU, FWI, FWI],
+                                  Union[bool, FWI]]
 
-unsigned_alu_op = Callable[[ALU, FWI_unsigned, FWI_unsigned],
-                           Union[bool, FWI_unsigned]]
-mmu_op = Callable[[MMU, FWI_unsigned, REGISTER], None]
+unsigned_alu_op_callable = Callable[[ALU, FWI_unsigned, FWI_unsigned],
+                                    Union[bool, FWI_unsigned]]
+mmu_op_callable = Callable[[MMU, FWI_unsigned, REGISTER], None]
 
 
 class VLQRISC_System():
@@ -194,8 +194,9 @@ class VLQRISC_System():
         opcode = instruction.segments[0]
         for op in Operations.__members__.values():
             if op.value.op_code == opcode.int:
-                alu_op_s: Optional[signed_alu_op] = op.value.alu_op_s
-                alu_op_u: Optional[unsigned_alu_op] = op.value.alu_op_u
+                alu_op_s: Optional[signed_alu_op_callable] = op.value.alu_op_s
+                alu_op_u: Optional[unsigned_alu_op_callable] = op.value.alu_op_u
+                mmu_op: Optional[mmu_op_callable] = op.value.mmu_op
                 break
         else:
             raise IncompatibleOpCode(
@@ -204,9 +205,9 @@ class VLQRISC_System():
         reg: OTER
         for reg in registrations:
             if reg.type == instruction.type:
-                reg.to_execute(self, instruction, alu_op_s, alu_op_u)
+                reg.to_execute(self, instruction, alu_op_s, alu_op_u, mmu_op)
 
-    def __GPR_GPR(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+    def __GPR_GPR(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op_callable] = None, alu_op_u: Optional[unsigned_alu_op_callable] = None, mmu_op: Optional[mmu_op_callable] = None):
         rd: REGISTER = self.register_table[instruction.segments[1].int]
         rs1: REGISTER = self.register_table[instruction.segments[2].int]
         rs2: REGISTER = self.register_table[instruction.segments[3].int]
@@ -220,7 +221,7 @@ class VLQRISC_System():
             if not isinstance(result, bool):
                 rd.set_automatic(result)
 
-    def __NUM_GPR(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+    def __NUM_GPR(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op_callable] = None, alu_op_u: Optional[unsigned_alu_op_callable] = None, mmu_op: Optional[mmu_op_callable] = None):
         rd: REGISTER = self.register_table[instruction.segments[1].int]
         rs1: REGISTER = self.register_table[instruction.segments[2].int]
         immediate_u: FWI_unsigned = instruction.segments[3]
@@ -234,7 +235,7 @@ class VLQRISC_System():
             if not isinstance(result, bool):
                 rd.set_automatic(result)
 
-    def __COMP_BRANCH(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+    def __COMP_BRANCH(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op_callable] = None, alu_op_u: Optional[unsigned_alu_op_callable] = None, mmu_op: Optional[mmu_op_callable] = None):
 
         rs1 = self.register_table[instruction.segments[1].int]
         rs2 = self.register_table[instruction.segments[2].int]
@@ -248,13 +249,17 @@ class VLQRISC_System():
             raise OperationNotImplemented(
                 "Comparison branch requires a signed ALU operation")
 
-    def __UNCOND_BRANCH(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+    def __UNCOND_BRANCH(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op_callable] = None, alu_op_u: Optional[unsigned_alu_op_callable] = None, mmu_op: Optional[mmu_op_callable] = None):
         jump_address = instruction.segments[1]
         self.program_control.update_pc(
             jump_address, self.register_table[hw_definitions.convert_reg_common_name_to_number("$pc")])
 
-    def __MEMORY(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None, mmu_op):
-        pass
+    def __MEMORY(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op_callable] = None, alu_op_u: Optional[unsigned_alu_op_callable] = None, mmu_op: Optional[mmu_op_callable] = None):
+        address = instruction.segments[2]
+        register = self.register_table[instruction.segments[1].int]
+        if mmu_op:
+            _ = mmu_op(
+                self.mmu, address, register)
 
 
 class OpTypeExecutionRegistration():
@@ -285,7 +290,7 @@ class Instruction():
 
 
 cpu_operation = Callable[[VLQRISC_System, Instruction,
-                          Optional[signed_alu_op], Optional[unsigned_alu_op]], None]
+                          Optional[signed_alu_op_callable], Optional[unsigned_alu_op_callable], Optional[mmu_op_callable]], None]
 
 
 class ReplacementTokens(str, enum.Enum):
@@ -303,14 +308,14 @@ class OpTypes(str, enum.Enum):
 
 
 class Operation():
-    def __init__(self, name: str,  syntax_tokens: list[list[str]], type: OpTypes, op_code: int, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None, mmu_op=None):
+    def __init__(self, name: str,  syntax_tokens: list[list[str]], type: OpTypes, op_code: int, alu_op_s: Optional[signed_alu_op_callable] = None, alu_op_u: Optional[unsigned_alu_op_callable] = None, mmu_op: Optional[mmu_op_callable] = None):
         self.name = name
         self.syntax_tokens = syntax_tokens
         self.type = type
         self.op_code = op_code
         self.alu_op_s = alu_op_s
         self.alu_op_u = alu_op_u
-        self.mm_u_op = mmu_op
+        self.mmu_op = mmu_op
 
     @ property
     def op_code_str(self):
