@@ -1,6 +1,6 @@
 from __future__ import annotations
 import enum
-from typing import Any, Callable, Optional, Union
+from typing import Callable, Optional, Union
 from src.VLQRISC_Simulator import hw_definitions
 from src.VLQRISC_Simulator.hw_definitions import MEMORY_SIZE, REGISTER_NAMES
 from src.Shared.fwi import FWI, FWI_unsigned
@@ -10,7 +10,102 @@ class IncompatibleOpCode(Exception):
     pass
 
 
+class OperationNotImplemented(Exception):
+    pass
+
+
+class ALU():
+    def __init__(self):
+        self.a = None  # input
+        self.b = None  # input
+        self.c = None
+
+    def set_operands(self, a: Union[FWI, FWI_unsigned], b: Union[FWI, FWI_unsigned]):
+        self.a = a  # input
+        self.b = b  # input
+
+    def ADD(self, a: FWI, b: FWI) -> FWI:
+        self.set_operands(a, b)
+        return a+b
+
+    def ADD_UNSIGNED(self, a: FWI_unsigned, b: FWI_unsigned) -> FWI_unsigned:
+        self.set_operands(a, b)
+        return a+b
+
+    def AND(self, a: FWI_unsigned, b: FWI_unsigned) -> FWI_unsigned:
+        self.set_operands(a, b)
+        string = ""
+        for i, bit in enumerate(a.bits):
+            if bit == 1 and b.bits[i] == 1:
+                string += "1"
+            else:
+                string += "0"
+        return FWI_unsigned.from_binary_str(string)
+
+    def OR(self, a: FWI_unsigned, b: FWI_unsigned) -> FWI_unsigned:
+        self.set_operands(a, b)
+        string = ""
+        for i, bit in enumerate(a.bits):
+            if (bit == 1 and b.bits[i] == 1) or bit != b.bits[i]:
+                string += "1"
+            else:
+                string += "0"
+        return FWI_unsigned.from_binary_str(string)
+
+    def LT(self, a: FWI, b: FWI) -> bool:
+        return a < b
+
+    def GT(self, a: FWI, b: FWI) -> bool:
+        return a > b
+
+    def LE(self, a: FWI, b: FWI) -> bool:
+        return a <= b
+
+    def GE(self, a: FWI, b: FWI) -> bool:
+        return a >= b
+
+    def XOR(self, a: FWI_unsigned, b: FWI_unsigned) -> FWI_unsigned:
+        self.set_operands(a, b)
+        string = ""
+        for i, bit in enumerate(a.bits):
+            if bit != b.bits[i]:
+                string += "1"
+            else:
+                string += "0"
+        return FWI_unsigned.from_binary_str(string)
+
+    def EQ(self, a: Union[FWI, FWI_unsigned], b: Union[FWI, FWI_unsigned]):
+        return a == b
+
+    def NEQ(self, a: Union[FWI, FWI_unsigned], b: Union[FWI, FWI_unsigned]):
+        return a != b
+
+
+class MMU():
+    """
+    Memory management unit -- Big endian
+    """
+
+    def __init__(self) -> None:
+        self.memory_table: list[FWI_unsigned] = [
+            FWI_unsigned(0, 8)] * MEMORY_SIZE
+
+    def LOAD_WORD(self, address: FWI_unsigned, register: VLQRISC_System):
+        if address.int % 4 != 0:
+            Exception("Word addresses must be divisible by 4")
+
+        self.memory_table[address.int]
+
+
+signed_alu_op = Callable[[ALU, FWI, FWI],
+                         Union[bool, FWI]]
+
+unsigned_alu_op = Callable[[ALU, FWI_unsigned, FWI_unsigned],
+                           Union[bool, FWI_unsigned]]
+
+
 class VLQRISC_System():
+
     class REGISTER():
         def __init__(self, name: str, number: int):
             self.NAME = name
@@ -36,66 +131,6 @@ class VLQRISC_System():
             else:
                 self.set_unsigned(value)
 
-    class ALU():
-        def __init__(self):
-            self.a = None  # input
-            self.b = None  # input
-            self.c = None
-
-        def set_operands(self, a: Union[FWI, FWI_unsigned], b: Union[FWI, FWI_unsigned]):
-            self.a = a  # input
-            self.b = b  # input
-
-        def ADD(self, a: FWI, b: FWI) -> FWI:
-            self.set_operands(a, b)
-            return a+b
-
-        def ADD_UNSIGNED(self, a: FWI_unsigned, b: FWI_unsigned) -> FWI_unsigned:
-            self.set_operands(a, b)
-            return a+b
-
-        def AND(self, a: FWI_unsigned, b: FWI_unsigned) -> FWI_unsigned:
-            self.set_operands(a, b)
-            string = ""
-            for i, bit in enumerate(a.bits):
-                if bit == 1 and b.bits[i] == 1:
-                    string += "1"
-                else:
-                    string += "0"
-            return FWI_unsigned.from_binary_str(string)
-
-        def OR(self, a: FWI_unsigned, b: FWI_unsigned) -> FWI_unsigned:
-            self.set_operands(a, b)
-            string = ""
-            for i, bit in enumerate(a.bits):
-                if (bit == 1 and b.bits[i] == 1) or bit != b.bits[i]:
-                    string += "1"
-                else:
-                    string += "0"
-            return FWI_unsigned.from_binary_str(string)
-
-        def LT(self, a: FWI, b: FWI) -> bool:
-            return a < b
-
-        def GT(self, a: FWI, b: FWI) -> bool:
-            return a > b
-
-        def LE(self, a: FWI, b: FWI) -> bool:
-            return a <= b
-
-        def GE(self, a: FWI, b: FWI) -> bool:
-            return a >= b
-
-        def XOR(self, a: FWI_unsigned, b: FWI_unsigned) -> FWI_unsigned:
-            self.set_operands(a, b)
-            string = ""
-            for i, bit in enumerate(a.bits):
-                if bit != b.bits[i]:
-                    string += "1"
-                else:
-                    string += "0"
-            return FWI_unsigned.from_binary_str(string)
-
     class PROGRAM_CONTROL():
         def __init__(self):
             self.a = None  # input
@@ -111,8 +146,6 @@ class VLQRISC_System():
             program_counter.set_automatic(new_address)
 
     def __init__(self):
-        self.memory_table = []
-        self.memory_table = [FWI_unsigned(0, 8)] * MEMORY_SIZE
 
         self.register_table: list[VLQRISC_System.REGISTER] = []
         for i, name in enumerate(REGISTER_NAMES):
@@ -120,7 +153,8 @@ class VLQRISC_System():
             self.register_table.append(
                 self.REGISTER(name, i))
 
-        self.alu = self.ALU()
+        self.alu = ALU()
+        self.mmu = MMU()
         self.program_control = self.PROGRAM_CONTROL()
 
     @property
@@ -132,155 +166,87 @@ class VLQRISC_System():
 
     def execute(self, instruction: Instruction):
 
-        segments = instruction.segments
-        _ = instruction.fwi.bits
-        opcode = segments[0]
+        OTER = OpTypeExecutionRegistration
+        registrations: list[OTER] = [OTER(OpTypes.GPR_GPR,
+                                          VLQRISC_System.__GPR_GPR),
+                                     OTER(OpTypes.NUM_GPR,
+                                          VLQRISC_System.__NUM_GPR),
+                                     OTER(OpTypes.UNCOND_BRANCH,
+                                          VLQRISC_System.__UNCOND_BRANCH),
+                                     OTER(OpTypes.COMP_BRANCH,
+                                          VLQRISC_System.__COMP_BRANCH)]
 
+        # Get micro operations
+        opcode = instruction.segments[0]
         for op in Operations.__members__.values():
             if op.value.op_code == opcode.int:
-
-                cpu_operation_alu: Optional[Callable[[VLQRISC_System.ALU, FWI, Union[FWI, bool]],
-                                            FWI]] = op.value.cpu_operation
+                alu_op_s: Optional[signed_alu_op] = op.value.alu_op_s
+                alu_op_u: Optional[unsigned_alu_op] = op.value.alu_op_u
                 break
-
         else:
             raise IncompatibleOpCode(
                 f"Provided opcode cannot be executed: {opcode.int}/0b{opcode.bits} ")
-        rd: VLQRISC_System.REGISTER
-        rs1: VLQRISC_System.REGISTER
-        rs2: VLQRISC_System.REGISTER
-        if instruction.type == OpTypes.GPR_GPR:
-            rd = self.register_table[segments[1].int]
-            rs1 = self.register_table[segments[2].int]
-            rs2 = self.register_table[segments[3].int]
-            if cpu_operation_alu:
-                rd.set_automatic(cpu_operation_alu(self.alu, rs1.s, rs2.s))
-        elif instruction.type == OpTypes.NUM_GPR:
-            rd = self.register_table[segments[1].int]
-            rs1 = self.register_table[segments[2].int]
-            immediate = segments[3]
-            if cpu_operation_alu:
-                rd.set_automatic(cpu_operation_alu(self.alu, rs1.s, immediate))
-        elif instruction.type == OpTypes.COMP_BRANCH:
-            rs1 = self.register_table[segments[1].int]
-            rs2 = self.register_table[segments[2].int]
-            jump_address = segments[3]
-            if cpu_operation_alu:
-                result = cpu_operation_alu(self.alu, rs1.s, rs2.s)
-                if result:
-                    self.program_control.update_pc(
-                        jump_address, self.register_table[hw_definitions.convert_reg_common_name_to_number("$pc")])
-            else:
+
+        reg: OTER
+        for reg in registrations:
+            if reg.type == instruction.type:
+                reg.to_execute(self, instruction, alu_op_s, alu_op_u)
+
+    def __GPR_GPR(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+        rd: VLQRISC_System.REGISTER = self.register_table[instruction.segments[1].int]
+        rs1: VLQRISC_System.REGISTER = self.register_table[instruction.segments[2].int]
+        rs2: VLQRISC_System.REGISTER = self.register_table[instruction.segments[3].int]
+
+        if alu_op_s:
+            result = alu_op_s(self.alu, rs1.s, rs2.s)
+            if not isinstance(result, bool):
+                rd.set_automatic(result)
+        elif alu_op_u:
+            result = alu_op_u(self.alu, rs1.u, rs2.u)
+            if not isinstance(result, bool):
+                rd.set_automatic(result)
+
+    def __NUM_GPR(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+        rd: VLQRISC_System.REGISTER = self.register_table[instruction.segments[1].int]
+        rs1: VLQRISC_System.REGISTER = self.register_table[instruction.segments[2].int]
+        immediate_u: FWI_unsigned = instruction.segments[3]
+        if alu_op_s:
+            immediate_s = FWI.from_unsigned(immediate_u)
+            result = alu_op_s(self.alu, rs1.s, immediate_s)
+            if not isinstance(result, bool):
+                rd.set_automatic(result)
+        elif alu_op_u:
+            result = alu_op_u(self.alu, rs1.u, immediate_u)
+            if not isinstance(result, bool):
+                rd.set_automatic(result)
+
+    def __COMP_BRANCH(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+
+        rs1 = self.register_table[instruction.segments[1].int]
+        rs2 = self.register_table[instruction.segments[2].int]
+        jump_address = instruction.segments[3]
+        if alu_op_s:
+            result = alu_op_s(self.alu, rs1.s, rs2.s)
+            if result:
                 self.program_control.update_pc(
                     jump_address, self.register_table[hw_definitions.convert_reg_common_name_to_number("$pc")])
-                pass
-        elif instruction.type == OpTypes.UNCOND_BRANCH:
-            jump_address = segments[1]
-            self.program_control.update_pc(
-                jump_address, self.register_table[hw_definitions.convert_reg_common_name_to_number("$pc")])
+        else:
+            raise OperationNotImplemented(
+                "Comparison branch requires a signed ALU operation")
+
+    def __UNCOND_BRANCH(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+        jump_address = instruction.segments[1]
+        self.program_control.update_pc(
+            jump_address, self.register_table[hw_definitions.convert_reg_common_name_to_number("$pc")])
+
+    def __MEMORY(self, self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
         pass
 
 
-class ReplacementTokens(str, enum.Enum):
-    GPR = "GPR"  # General Purpose Register (GPR)
-    NUM = "NUM"
-    ADDRESS = "ADDR"
-
-
-class OpTypes(str, enum.Enum):
-    GPR_GPR = "register_with_register"
-    NUM_GPR = "num_with_register"  # number with GPR
-    COMP_BRANCH = "comparison_branch"
-    UNCOND_BRANCH = "unconditional_branch"
-
-
-class Operation():
-    def __init__(self, name: str,  syntax_tokens: list[list[str]], type: OpTypes, op_code: int, cpu_operation: Any = None):
-        self.name = name
-        self.syntax_tokens = syntax_tokens
+class OpTypeExecutionRegistration():
+    def __init__(self, type: OpTypes, to_execute: cpu_operation) -> None:
         self.type = type
-        self.op_code = op_code
-        self.cpu_operation = cpu_operation
-
-    @property
-    def op_code_str(self):
-        string = bin(self.op_code)
-        return string[2:].zfill(5)
-
-    @property
-    def op_code_fwi(self):
-        return FWI_unsigned(self.op_code, 5)
-
-    def __str__(self):
-        return f"""{self.name}: Opcode = {self.op_code_str} {self.syntax_tokens}"""
-
-
-class Operations(enum.Enum):
-
-    ADD_REGS = Operation("ADD_REGS",
-                         [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR,
-                             "+", ReplacementTokens.GPR]],
-                         OpTypes.GPR_GPR,
-                         0b00000, VLQRISC_System.ALU.ADD)
-
-    ADD_REG_TO_NUM = Operation("ADD_REG_TO_NUM",
-                               [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "+", ReplacementTokens.NUM],
-                                [ReplacementTokens.GPR, "=", ReplacementTokens.NUM, "+", ReplacementTokens.GPR]],
-                               OpTypes.NUM_GPR,
-                               0b00001, VLQRISC_System.ALU.ADD)
-
-    AND_REGS = Operation("AND_REGS",
-                         [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR,
-                             "&", ReplacementTokens.GPR]],
-                         OpTypes.GPR_GPR,
-                         0b00010, VLQRISC_System.ALU.AND)
-
-    AND_REG_W_NUM = Operation("AND_REG_W_NUM",
-                              [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "&", ReplacementTokens.NUM],
-                               [ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "&", ReplacementTokens.NUM]],
-                              OpTypes.NUM_GPR, 0b00011, VLQRISC_System.ALU.AND)
-
-    OR_REGS = Operation("OR_REGS",
-                        [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.GPR], [
-                            ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.GPR]],
-                        OpTypes.GPR_GPR,
-                        0b00100, VLQRISC_System.ALU.OR)
-
-    OR_REG_W_NUM = Operation("OR_REG_WITH_NUM",
-                             [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.NUM],
-                                 [ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.NUM]],
-                             OpTypes.GPR_GPR,
-                             0b00101, VLQRISC_System.ALU.OR)
-
-    BRANCH_IF_EQUAL = Operation("BRANCH_IF_EQUAL", [
-                                ["if", '(', ReplacementTokens.GPR, "==", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00110)
-
-    BRANCH_IF_NOT_EQUAL = Operation("BRANCH_IF_NOT_EQUAL", [
-        ["if", '(', ReplacementTokens.GPR,  "!=", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00111)
-
-    BRANCH_GT_OR_EQUAL = Operation("BRANCH_IF_GREATER_THAN_OR_EQUAL", [[
-                                   "if", '(', ReplacementTokens.GPR,  ">=", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01000, VLQRISC_System.ALU.GE)
-
-    BRANCH_GT = Operation("BRANCH_IF_GREATER_THAN", [[
-        "if", '(', ReplacementTokens.GPR,  ">", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01001, VLQRISC_System.ALU.GT)
-
-    BRANCH_LT_OR_EQUAL = Operation("BRANCH_IF_LESS_THAN_OR_EQUAL", [[
-        "if", '(', ReplacementTokens.GPR,  "<=", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01010, VLQRISC_System.ALU.LE)
-
-    BRANCH_LT = Operation("BRANCH_IF_LESS_THAN", [[
-        "if", '(', ReplacementTokens.GPR,  "<", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01011, VLQRISC_System.ALU.LT)
-
-    JUMP = Operation("JUMP", [
-        ["j", ReplacementTokens.ADDRESS]], OpTypes.UNCOND_BRANCH, 0b01100)
-
-
-operators: list[str] = []
-for op in Operations:
-    tokens = op.value.syntax_tokens
-    for list in tokens:
-        for token in list:
-            if token not in operators and token not in ReplacementTokens:
-                operators.append(token)
+        self.to_execute = to_execute
 
 
 class Instruction():
@@ -300,3 +266,115 @@ class Instruction():
             return [self.fwi[27:31], self.fwi[0: 15]]
         else:
             return [self.fwi]
+
+
+cpu_operation = Callable[[VLQRISC_System, Instruction,
+                          Optional[signed_alu_op], Optional[unsigned_alu_op]], None]
+
+
+class ReplacementTokens(str, enum.Enum):
+    GPR = "GPR"  # General Purpose Register (GPR)
+    NUM = "NUM"
+    ADDRESS = "ADDR"
+
+
+class OpTypes(str, enum.Enum):
+    GPR_GPR = "register_with_register"
+    NUM_GPR = "num_with_register"  # number with GPR
+    COMP_BRANCH = "comparison_branch"
+    UNCOND_BRANCH = "unconditional_branch"
+    MEMORY = "memory"
+
+
+class Operation():
+    def __init__(self, name: str,  syntax_tokens: list[list[str]], type: OpTypes, op_code: int, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+        self.name = name
+        self.syntax_tokens = syntax_tokens
+        self.type = type
+        self.op_code = op_code
+        self.alu_op_s = alu_op_s
+        self.alu_op_u = alu_op_u
+        self.mm_u_op = mmu_op
+
+    @ property
+    def op_code_str(self):
+        string = bin(self.op_code)
+        return string[2:].zfill(5)
+
+    @ property
+    def op_code_fwi(self):
+        return FWI_unsigned(self.op_code, 5)
+
+    def __str__(self):
+        return f"""{self.name}: Opcode = {self.op_code_str} {self.syntax_tokens}"""
+
+
+class Operations(enum.Enum):
+
+    ADD_REGS = Operation("ADD_REGS",
+                         [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR,
+                             "+", ReplacementTokens.GPR]],
+                         OpTypes.GPR_GPR,
+                         0b00000, ALU.ADD)
+
+    ADD_REG_TO_NUM = Operation("ADD_REG_TO_NUM",
+                               [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "+", ReplacementTokens.NUM],
+                                [ReplacementTokens.GPR, "=", ReplacementTokens.NUM, "+", ReplacementTokens.GPR]],
+                               OpTypes.NUM_GPR,
+                               0b00001, ALU.ADD)
+
+    AND_REGS = Operation("AND_REGS",
+                         [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR,
+                             "&", ReplacementTokens.GPR]],
+                         OpTypes.GPR_GPR,
+                         0b00010, alu_op_u=ALU.AND)
+
+    AND_REG_W_NUM = Operation("AND_REG_W_NUM",
+                              [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "&", ReplacementTokens.NUM],
+                               [ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "&", ReplacementTokens.NUM]],
+                              OpTypes.NUM_GPR, 0b00011, alu_op_u=ALU.AND)
+
+    OR_REGS = Operation("OR_REGS",
+                        [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.GPR], [
+                            ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.GPR]],
+                        OpTypes.GPR_GPR,
+                        0b00100, alu_op_u=ALU.OR)
+
+    OR_REG_W_NUM = Operation("OR_REG_WITH_NUM",
+                             [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.NUM],
+                                 [ReplacementTokens.GPR, "=", ReplacementTokens.GPR, "|", ReplacementTokens.NUM]],
+                             OpTypes.GPR_GPR,
+                             0b00101, alu_op_u=ALU.OR)
+
+    BRANCH_IF_EQUAL = Operation("BRANCH_IF_EQUAL", [
+                                ["if", '(', ReplacementTokens.GPR, "==", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00110, ALU.EQ)
+
+    BRANCH_IF_NOT_EQUAL = Operation("BRANCH_IF_NOT_EQUAL", [
+        ["if", '(', ReplacementTokens.GPR,  "!=", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b00111, ALU.NEQ)
+
+    BRANCH_GT_OR_EQUAL = Operation("BRANCH_IF_GREATER_THAN_OR_EQUAL", [[
+                                   "if", '(', ReplacementTokens.GPR,  ">=", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01000, ALU.GE)
+
+    BRANCH_GT = Operation("BRANCH_IF_GREATER_THAN", [[
+        "if", '(', ReplacementTokens.GPR,  ">", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01001, ALU.GT)
+
+    BRANCH_LT_OR_EQUAL = Operation("BRANCH_IF_LESS_THAN_OR_EQUAL", [[
+        "if", '(', ReplacementTokens.GPR,  "<=", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01010, ALU.LE)
+
+    BRANCH_LT = Operation("BRANCH_IF_LESS_THAN", [[
+        "if", '(', ReplacementTokens.GPR,  "<", ReplacementTokens.GPR, ")", "j", ReplacementTokens.ADDRESS]], OpTypes.COMP_BRANCH, 0b01011, ALU.LT)
+
+    JUMP = Operation("JUMP", [
+        ["j", ReplacementTokens.ADDRESS]], OpTypes.UNCOND_BRANCH, 0b01100)
+
+    LOAD_WORD = Operation(
+        "LOAD_WORD", [["lw", ReplacementTokens.GPR, ReplacementTokens.NUM]], OpTypes.MEMORY, 0b01101)
+
+
+operators: list[str] = []
+for op in Operations:
+    tokens = op.value.syntax_tokens
+    for list in tokens:
+        for token in list:
+            if token not in operators and token not in ReplacementTokens:
+                operators.append(token)
