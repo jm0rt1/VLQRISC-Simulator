@@ -17,7 +17,9 @@ REGISTER_NAMES = ["$zero",
                   "$s4",
                   "$a0",
                   "$a1",
+                  "$a2",
                   "$v0",
+                  "$ra",
                   "$sp",
                   "$pc"]
 
