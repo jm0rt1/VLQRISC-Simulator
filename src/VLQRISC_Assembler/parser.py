@@ -101,11 +101,18 @@ class LineParser():
                 self.line_data.Rs1_common_name), 4)
             self.line_data.Rs2_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
                 self.line_data.Rs2_common_name), 4)
-            self.line_data.jump_address_str = self.line_data.tokenized_line[-1]
+            self.line_data.address_str = self.line_data.tokenized_line[-1]
 
         def get_operands_uncond_branch():
             self.raise_on_wrong_op_type(operations.OpTypes.UNCOND_BRANCH)
-            self.line_data.jump_address_str = self.line_data.tokenized_line[-1]
+            self.line_data.address_str = self.line_data.tokenized_line[-1]
+
+        def get_operands_memory():
+            self.raise_on_wrong_op_type(operations.OpTypes.MEMORY)
+            self.line_data.address_str = self.line_data.tokenized_line[-1]
+            self.line_data.Rd_common_name = self.line_data.tokenized_line[1]
+            self.line_data.Rd_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
+                self.line_data.Rd_common_name), 4)
 
         if self.line_data.type == operations.OpTypes.GPR_GPR:
             get_operands_gpr_gpr()
@@ -115,6 +122,8 @@ class LineParser():
             get_operands_comp_branch()
         elif self.line_data.type == operations.OpTypes.UNCOND_BRANCH:
             get_operands_uncond_branch()
+        elif self.line_data.type == operations.OpTypes.MEMORY:
+            get_operands_memory()
         else:
             raise NoTypeSpecified("There was no operation type specified")
 
@@ -188,4 +197,4 @@ class LineData():
         self.Rd_num: Optional[FWI_unsigned] = None
         self.Rs1_num: Optional[FWI_unsigned] = None
         self.Rs2_num: Optional[FWI_unsigned] = None
-        self.jump_address_str: Optional[str] = None
+        self.address_str: Optional[str] = None

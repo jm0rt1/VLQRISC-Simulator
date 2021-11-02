@@ -33,7 +33,7 @@ class TestInstructionGenerator(unittest.TestCase):
             if scheme.immediate_operand:
                 immediate_str = convert_int_bin_str(
                     scheme.immediate_operand, 19)
-            if scheme.jump_address:
+            if scheme.jump_address is not None:
                 jump_address = convert_int_bin_str(
                     scheme.jump_address, 16)
             opcode = scheme.op_code_str
@@ -53,6 +53,9 @@ class TestInstructionGenerator(unittest.TestCase):
             elif line_data.type == OpTypes.UNCOND_BRANCH:
                 expected_instruction = opcode + "0"*11+jump_address  # type:ignore
                 expected_segments = [opcode, jump_address]  # type:ignore
+            elif line_data.type == OpTypes.MEMORY:
+                expected_instruction = opcode + rd + "0"*7+jump_address  # type:ignore
+                expected_segments = [opcode, rd, jump_address]  # type:ignore
             else:
                 raise Exception("Type not found")
 
@@ -76,6 +79,8 @@ class Scheme():
 
 
 io_schemes = [
+    Scheme("sw $s2 0", "$s2", None, None,
+           Operations.STORE_WORD.value.op_code_str, None, 0),
     Scheme("j 100", None, None, None,
            Operations.JUMP.value.op_code_str, None, 100),
     Scheme("$s4=$s2+300", "$s4", "$s2", None,

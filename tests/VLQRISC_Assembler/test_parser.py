@@ -39,8 +39,8 @@ class TestLineParser(unittest.TestCase):
             else:
                 self.assertEqual(line_data.immediate_operand,
                                  scheme.expected_immediate_operand)
-                self.assertEqual(line_data.jump_address_str,
-                                 scheme.jump_address_str)
+                self.assertEqual(line_data.address_str,
+                                 scheme.address)
             # Rs1
             if line_data.Rs1_num is not None:
                 self.assertEqual(line_data.Rs1_num.int,
@@ -70,13 +70,13 @@ class TestLineParser(unittest.TestCase):
                 # jump adress and
                 self.assertEqual(line_data.immediate_operand.int,
                                  scheme.expected_immediate_operand)
-                self.assertEqual(line_data.jump_address_str,
-                                 scheme.jump_address_str)
+                self.assertEqual(line_data.address_str,
+                                 scheme.address)
             else:
                 self.assertEqual(line_data.immediate_operand,
                                  scheme.expected_immediate_operand)
-                self.assertEqual(line_data.jump_address_str,
-                                 scheme.jump_address_str)
+                self.assertEqual(line_data.address_str,
+                                 scheme.address)
 
 
 @dataclass(frozen=True)
@@ -87,7 +87,7 @@ class Scheme():
     syntax_tokens: list[list[str]]
 
     expected_immediate_operand: Optional[int]
-    jump_address_str: Optional[str]
+    address: Optional[str]
 
     expected_Rd_common_name: Optional[str]
     expected_Rd_num: Optional[int]
@@ -106,7 +106,13 @@ class Scheme():
 
 passing_input_output_schemes = [
     #Scheme("J label")
-
+    Scheme("sw $s2 0", ["sw", "$s2", "0"],
+           Operations.STORE_WORD.value.syntax_tokens, None, "0", "$s2", convert_reg_common_name_to_number(
+               "$s2"),
+           None, None, None, None,
+           Operations.STORE_WORD.value.op_code,
+           Operations.STORE_WORD.value.op_code_str,
+           Operations.STORE_WORD.value.type),
     Scheme("j label", ["j", "label"],
            Operations.JUMP.value.syntax_tokens, None, "label", None, None,
            None, None, None, None,

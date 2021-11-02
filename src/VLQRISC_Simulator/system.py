@@ -74,10 +74,10 @@ class ALU():
                 string += "0"
         return FWI_unsigned.from_binary_str(string)
 
-    def EQ(self, a: Union[FWI, FWI_unsigned], b: Union[FWI, FWI_unsigned]):
+    def EQ(self, a: FWI, b: FWI):
         return a == b
 
-    def NEQ(self, a: Union[FWI, FWI_unsigned], b: Union[FWI, FWI_unsigned]):
+    def NEQ(self, a: FWI, b: FWI):
         return a != b
 
 
@@ -87,14 +87,51 @@ class MMU():
     """
 
     def __init__(self) -> None:
-        self.memory_table: list[FWI_unsigned] = [
-            FWI_unsigned(0, 8)] * MEMORY_SIZE
 
-    def LOAD_WORD(self, address: FWI_unsigned, register: VLQRISC_System):
+        self.memory_table: list[list[FWI_unsigned]] = [
+            [FWI_unsigned(0, 8)] * 4]*int(MEMORY_SIZE/4)
+
+        pass
+
+    def STORE_WORD(self, address: FWI_unsigned, register: REGISTER):
         if address.int % 4 != 0:
             Exception("Word addresses must be divisible by 4")
+        else:
+            segments = [register.u[24:31], register.u[16:23],
+                        register.u[8:15], register.u[0:7]]
+            self.memory_table[int(address.int/4)] = segments
 
-        self.memory_table[address.int]
+    def LOAD_WORD(self, address: FWI_unsigned, register: REGISTER):
+        if address.int % 4 != 0:
+            Exception("Word addresses must be divisible by 4")
+        else:
+            return self.memory_table[int(address.int/4)]
+
+
+class REGISTER():
+    def __init__(self, name: str, number: int):
+        self.NAME = name
+        self.NUMBER = number
+        if self.NAME != "$sp" and self.NAME != "$pc":
+            self.s = FWI(0, 32)
+            self.u = FWI_unsigned(0, 32)
+        else:
+            self.s = FWI(0, 16)
+            self.u = FWI_unsigned(0, 16)
+
+    def set_unsigned(self, u_value: FWI_unsigned):
+        self.s = FWI.from_unsigned(u_value)
+        self.u = u_value
+
+    def set_signed(self, s_value: FWI):
+        self.s = s_value
+        self.u = FWI_unsigned.from_signed(s_value)
+
+    def set_automatic(self, value: Union[FWI, FWI_unsigned]):
+        if isinstance(value, FWI):
+            self.set_signed(value)
+        else:
+            self.set_unsigned(value)
 
 
 signed_alu_op = Callable[[ALU, FWI, FWI],
@@ -102,34 +139,10 @@ signed_alu_op = Callable[[ALU, FWI, FWI],
 
 unsigned_alu_op = Callable[[ALU, FWI_unsigned, FWI_unsigned],
                            Union[bool, FWI_unsigned]]
+mmu_op = Callable[[MMU, FWI_unsigned, REGISTER], None]
 
 
 class VLQRISC_System():
-
-    class REGISTER():
-        def __init__(self, name: str, number: int):
-            self.NAME = name
-            self.NUMBER = number
-            if self.NAME != "$sp" and self.NAME != "$pc":
-                self.s = FWI(0, 32)
-                self.u = FWI_unsigned(0, 32)
-            else:
-                self.s = FWI(0, 16)
-                self.u = FWI_unsigned(0, 16)
-
-        def set_unsigned(self, u_value: FWI_unsigned):
-            self.s = FWI.from_unsigned(u_value)
-            self.u = u_value
-
-        def set_signed(self, s_value: FWI):
-            self.s = s_value
-            self.u = FWI_unsigned.from_signed(s_value)
-
-        def set_automatic(self, value: Union[FWI, FWI_unsigned]):
-            if isinstance(value, FWI):
-                self.set_signed(value)
-            else:
-                self.set_unsigned(value)
 
     class PROGRAM_CONTROL():
         def __init__(self):
@@ -141,23 +154,23 @@ class VLQRISC_System():
             self.a = a  # input
             self.b = b  # input
 
-        def update_pc(self, new_address: FWI_unsigned, program_counter: VLQRISC_System.REGISTER):
+        def update_pc(self, new_address: FWI_unsigned, program_counter: REGISTER):
 
             program_counter.set_automatic(new_address)
 
     def __init__(self):
 
-        self.register_table: list[VLQRISC_System.REGISTER] = []
+        self.register_table: list[REGISTER] = []
         for i, name in enumerate(REGISTER_NAMES):
 
             self.register_table.append(
-                self.REGISTER(name, i))
+                REGISTER(name, i))
 
         self.alu = ALU()
         self.mmu = MMU()
         self.program_control = self.PROGRAM_CONTROL()
 
-    @property
+    @ property
     def register_table_bits(self) -> list[tuple[str, str]]:
         register_table_bits: list[tuple[str, str]] = []
         for reg in self.register_table:
@@ -174,7 +187,8 @@ class VLQRISC_System():
                                      OTER(OpTypes.UNCOND_BRANCH,
                                           VLQRISC_System.__UNCOND_BRANCH),
                                      OTER(OpTypes.COMP_BRANCH,
-                                          VLQRISC_System.__COMP_BRANCH)]
+                                          VLQRISC_System.__COMP_BRANCH),
+                                     OTER(OpTypes.MEMORY, VLQRISC_System.__MEMORY)]
 
         # Get micro operations
         opcode = instruction.segments[0]
@@ -193,9 +207,9 @@ class VLQRISC_System():
                 reg.to_execute(self, instruction, alu_op_s, alu_op_u)
 
     def __GPR_GPR(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
-        rd: VLQRISC_System.REGISTER = self.register_table[instruction.segments[1].int]
-        rs1: VLQRISC_System.REGISTER = self.register_table[instruction.segments[2].int]
-        rs2: VLQRISC_System.REGISTER = self.register_table[instruction.segments[3].int]
+        rd: REGISTER = self.register_table[instruction.segments[1].int]
+        rs1: REGISTER = self.register_table[instruction.segments[2].int]
+        rs2: REGISTER = self.register_table[instruction.segments[3].int]
 
         if alu_op_s:
             result = alu_op_s(self.alu, rs1.s, rs2.s)
@@ -207,8 +221,8 @@ class VLQRISC_System():
                 rd.set_automatic(result)
 
     def __NUM_GPR(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
-        rd: VLQRISC_System.REGISTER = self.register_table[instruction.segments[1].int]
-        rs1: VLQRISC_System.REGISTER = self.register_table[instruction.segments[2].int]
+        rd: REGISTER = self.register_table[instruction.segments[1].int]
+        rs1: REGISTER = self.register_table[instruction.segments[2].int]
         immediate_u: FWI_unsigned = instruction.segments[3]
         if alu_op_s:
             immediate_s = FWI.from_unsigned(immediate_u)
@@ -239,7 +253,7 @@ class VLQRISC_System():
         self.program_control.update_pc(
             jump_address, self.register_table[hw_definitions.convert_reg_common_name_to_number("$pc")])
 
-    def __MEMORY(self, self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+    def __MEMORY(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None, mmu_op):
         pass
 
 
@@ -264,6 +278,8 @@ class Instruction():
             return [self.fwi[27:31], self.fwi[23:26], self.fwi[19:22], self.fwi[0:15]]
         elif self.type == OpTypes.UNCOND_BRANCH:
             return [self.fwi[27:31], self.fwi[0: 15]]
+        elif self.type == OpTypes.MEMORY:
+            return [self.fwi[27:31], self.fwi[23:26], self.fwi[0:15]]
         else:
             return [self.fwi]
 
@@ -287,7 +303,7 @@ class OpTypes(str, enum.Enum):
 
 
 class Operation():
-    def __init__(self, name: str,  syntax_tokens: list[list[str]], type: OpTypes, op_code: int, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None):
+    def __init__(self, name: str,  syntax_tokens: list[list[str]], type: OpTypes, op_code: int, alu_op_s: Optional[signed_alu_op] = None, alu_op_u: Optional[unsigned_alu_op] = None, mmu_op=None):
         self.name = name
         self.syntax_tokens = syntax_tokens
         self.type = type
@@ -325,7 +341,7 @@ class Operations(enum.Enum):
 
     AND_REGS = Operation("AND_REGS",
                          [[ReplacementTokens.GPR, "=", ReplacementTokens.GPR,
-                             "&", ReplacementTokens.GPR]],
+                           "&", ReplacementTokens.GPR]],
                          OpTypes.GPR_GPR,
                          0b00010, alu_op_u=ALU.AND)
 
@@ -368,7 +384,9 @@ class Operations(enum.Enum):
         ["j", ReplacementTokens.ADDRESS]], OpTypes.UNCOND_BRANCH, 0b01100)
 
     LOAD_WORD = Operation(
-        "LOAD_WORD", [["lw", ReplacementTokens.GPR, ReplacementTokens.NUM]], OpTypes.MEMORY, 0b01101)
+        "LOAD_WORD", [["lw", ReplacementTokens.GPR, ReplacementTokens.NUM]], OpTypes.MEMORY, 0b01101, mmu_op=MMU.LOAD_WORD)
+    STORE_WORD = Operation("STORE_WORD", [
+                           ["sw", ReplacementTokens.GPR, ReplacementTokens.NUM]], OpTypes.MEMORY, 0b01110, mmu_op=MMU.STORE_WORD)
 
 
 operators: list[str] = []
