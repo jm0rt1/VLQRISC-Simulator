@@ -79,6 +79,8 @@ class Scheme():
 
 
 io_schemes = [
+    Scheme("lw $s2 0", "$s2", None, None,
+           Operations.LOAD_WORD.value.op_code_str, None, 0),
     Scheme("sw $s2 0", "$s2", None, None,
            Operations.STORE_WORD.value.op_code_str, None, 0),
     Scheme("j 100", None, None, None,

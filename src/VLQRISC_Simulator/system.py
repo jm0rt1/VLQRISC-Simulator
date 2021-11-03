@@ -105,7 +105,12 @@ class MMU():
         if address.int % 4 != 0:
             Exception("Word addresses must be divisible by 4")
         else:
-            return self.memory_table[int(address.int/4)]
+            row: list[FWI_unsigned] = self.memory_table[int(address.int/4)]
+            bin_str = ""
+            for item in row:
+                bin_str += item.bits
+
+            register.set_automatic(FWI_unsigned.from_binary_str(bin_str))
 
 
 class REGISTER():
@@ -176,6 +181,16 @@ class VLQRISC_System():
         for reg in self.register_table:
             register_table_bits.append((reg.NAME, reg.u.bits))
         return register_table_bits
+
+    @ property
+    def memory_table_bits(self) -> list[tuple[str, str, str, str]]:
+        memory_table_bits: list[tuple[str, str]] = []
+        entry: FWI_unsigned
+        for i, entry in enumerate(self.mmu.memory_table):
+            bits = [hex(4*i)]
+            bits.extend([item.bits for item in entry])
+            memory_table_bits.append(bits)
+        return memory_table_bits
 
     def execute(self, instruction: Instruction):
 
@@ -258,7 +273,7 @@ class VLQRISC_System():
         address = instruction.segments[2]
         register = self.register_table[instruction.segments[1].int]
         if mmu_op:
-            _ = mmu_op(
+            result = mmu_op(
                 self.mmu, address, register)
 
 

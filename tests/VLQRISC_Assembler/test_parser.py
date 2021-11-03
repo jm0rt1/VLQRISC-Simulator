@@ -105,7 +105,14 @@ class Scheme():
 
 
 passing_input_output_schemes = [
-    #Scheme("J label")
+    # Scheme("J label")
+    Scheme("lw $s2 0", ["sw", "$s2", "0"],
+           Operations.STORE_WORD.value.syntax_tokens, None, "0", "$s2", convert_reg_common_name_to_number(
+        "$s2"),
+        None, None, None, None,
+        Operations.STORE_WORD.value.op_code,
+        Operations.STORE_WORD.value.op_code_str,
+        Operations.STORE_WORD.value.type),
     Scheme("sw $s2 0", ["sw", "$s2", "0"],
            Operations.STORE_WORD.value.syntax_tokens, None, "0", "$s2", convert_reg_common_name_to_number(
                "$s2"),
