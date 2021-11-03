@@ -2,7 +2,7 @@
 import src.VLQRISC_Assembler.parser as parser
 import src.VLQRISC_Simulator.system as operations
 
-from src.Shared.fwi import FWI_unsigned
+from src.Shared.fwi import FWI, FWI_unsigned
 from src.VLQRISC_Simulator.system import Instruction
 
 
@@ -17,6 +17,12 @@ class OpTypeNotRecognized(Exception):
 class InstructionGenerator():
     def __init__(self, line_data: parser.LineData) -> None:
         self.line_data = line_data
+
+        self.Rd = None
+        self.Rs1 = None
+        self.Rs2 = None
+        self.immediate_operand = None
+        self.address_str = None
 
     def generate(self) -> Instruction:
         self.__generate_binary_strings()
@@ -68,7 +74,14 @@ class InstructionGenerator():
         return Instruction(FWI_unsigned.from_binary_str(f"{self.opcode}{zeros}{jump_address.bits}"), operations.OpTypes.UNCOND_BRANCH)
 
     def __generate_MEMORY(self):
-        address = self.get_address()
+        if self.address_str:
+            address = self.get_address()
+        else:
+            address = FWI_unsigned(0, 16)
+        if self.Rs1:
+            zeros = "0"*3
+            return Instruction(FWI_unsigned.from_binary_str(f"{self.opcode}{self.Rd}{self.Rs1}{zeros}{address.bits}"), operations.OpTypes.MEMORY)
+
         zeros = "0"*7
         return Instruction(FWI_unsigned.from_binary_str(f"{self.opcode}{self.Rd}{zeros}{address.bits}"), operations.OpTypes.MEMORY)
 

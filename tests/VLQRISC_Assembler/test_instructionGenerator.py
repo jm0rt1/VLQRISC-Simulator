@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional
 import unittest
+
 from src.Shared.utils import convert_int_bin_str
 
 from src.VLQRISC_Simulator.system import Operations, OpTypes
@@ -15,7 +16,13 @@ class TestInstructionGenerator(unittest.TestCase):
     def test_loop(self):
 
         for scheme in io_schemes:
+            rd = None
+            rs1 = None
+            rs2 = None
+            immediate_str = None
 
+            jump_address = None
+            opcode = None
             line_parser = parser.LineParser(scheme.input)
             line_data = line_parser.parse()
 
@@ -54,8 +61,14 @@ class TestInstructionGenerator(unittest.TestCase):
                 expected_instruction = opcode + "0"*11+jump_address  # type:ignore
                 expected_segments = [opcode, jump_address]  # type:ignore
             elif line_data.type == OpTypes.MEMORY:
-                expected_instruction = opcode + rd + "0"*7+jump_address  # type:ignore
-                expected_segments = [opcode, rd, jump_address]  # type:ignore
+                if rs1:
+                    expected_instruction = opcode + rd + rs1 + "0"*3+jump_address  # type:ignore
+                    expected_segments = [opcode, rd, rs1,
+                                         jump_address]  # type:ignore
+                else:
+                    expected_instruction = opcode + rd + "0"*7+jump_address  # type:ignore
+                    expected_segments = [opcode, rd, "0000",
+                                         jump_address]  # type:ignore
             else:
                 raise Exception("Type not found")
 
@@ -79,9 +92,9 @@ class Scheme():
 
 
 io_schemes = [
-    Scheme("lw $s2 0", "$s2", None, None,
+    Scheme("lw $s2, 0", "$s2", None, None,
            Operations.LOAD_WORD.value.op_code_str, None, 0),
-    Scheme("sw $s2 0", "$s2", None, None,
+    Scheme("sw $s2, 0", "$s2", None, None,
            Operations.STORE_WORD.value.op_code_str, None, 0),
     Scheme("j 100", None, None, None,
            Operations.JUMP.value.op_code_str, None, 100),
