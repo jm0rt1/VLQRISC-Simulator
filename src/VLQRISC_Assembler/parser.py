@@ -109,10 +109,23 @@ class LineParser():
 
         def get_operands_memory():
             self.raise_on_wrong_op_type(operations.OpTypes.MEMORY)
-            self.line_data.address_str = self.line_data.tokenized_line[-1]
-            self.line_data.Rd_common_name = self.line_data.tokenized_line[1]
-            self.line_data.Rd_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
-                self.line_data.Rd_common_name), 4)
+            if self.line_data.form:
+                # address is an immediate
+                if self.line_data.form[2] == operations.ReplacementTokens.NUM:
+                    self.line_data.address_str = self.line_data.tokenized_line[2]
+
+                # address is a register
+                if self.line_data.form[2] == operations.ReplacementTokens.GPR:
+                    self.line_data.Rs1_common_name = self.line_data.tokenized_line[2]
+                    self.line_data.Rs1_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
+                        self.line_data.Rs1_common_name), 4)
+                # get the offset if there is one
+                if len(self.line_data.form) == 6 and self.line_data.form[5] == operations.ReplacementTokens.NUM:
+                    self.line_data.address_str = self.line_data.tokenized_line[5]
+
+                self.line_data.Rd_common_name = self.line_data.tokenized_line[1]
+                self.line_data.Rd_num = FWI_unsigned(hw_definitions.convert_reg_common_name_to_number(
+                    self.line_data.Rd_common_name), 4)
 
         if self.line_data.type == operations.OpTypes.GPR_GPR:
             get_operands_gpr_gpr()
