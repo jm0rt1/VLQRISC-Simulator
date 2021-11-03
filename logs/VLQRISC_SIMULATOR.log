@@ -381,3 +381,12 @@ Traceback (most recent call last):
   File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/Shared/fwi.py", line 158, in __init__
     "Fixed int passed in with fixed width integer exceeds limits")
 src.Shared.fwi.FWIOverFlow: Fixed int passed in with fixed width integer exceeds limits
+invalid line of input 
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 141, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input 

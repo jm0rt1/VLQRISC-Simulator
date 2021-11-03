@@ -79,7 +79,7 @@ class Ui_MainWindow(object):
         self.label.setText(_translate("MainWindow", "Instruction inputed:"))
         self.label_2.setText(_translate("MainWindow", "Result from last instruction:"))
         self.label_3.setText(_translate("MainWindow", "Registers:"))
-        self.label_4.setText(_translate("MainWindow", "Memory"))
+        self.label_4.setText(_translate("MainWindow", "Memory:"))
 
 
 if __name__ == "__main__":

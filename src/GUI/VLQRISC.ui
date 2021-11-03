@@ -156,7 +156,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Memory</string>
+     <string>Memory:</string>
     </property>
    </widget>
    <widget class="QListWidget" name="instruction_history">
