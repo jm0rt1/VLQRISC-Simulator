@@ -510,3 +510,59 @@ Traceback (most recent call last):
   File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 154, in __get_op_info
     raise InvalidOperationInput(f"invalid line of input {self.line}")
 src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input sw $s0 + -4
+Word addresses must be divisible by 4
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 58, in update
+    self.system.execute(instruction)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 240, in execute
+    reg.to_execute(self, instruction, alu_op_s, alu_op_u, mmu_op)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 297, in __MEMORY
+    self.mmu, address, data_register)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 98, in STORE_WORD
+    raise Exception("Word addresses must be divisible by 4")
+Exception: Word addresses must be divisible by 4
+invalid line of input If($s1 == $2) j 16
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 154, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input If($s1 == $2) j 16
+invalid line of input If($s1 != $2) j 16
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 154, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input If($s1 != $2) j 16
+invalid line of input If($s1 != $2) j 0b100
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 154, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input If($s1 != $2) j 0b100
+invalid line of input If($s1 > $2) j 0b100
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 154, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input If($s1 > $2) j 0b100
+invalid line of input If($s1 == $s2) j 16
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 154, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input If($s1 == $s2) j 16

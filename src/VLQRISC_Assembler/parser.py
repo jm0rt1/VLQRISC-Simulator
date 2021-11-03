@@ -111,8 +111,8 @@ class LineParser():
             self.raise_on_wrong_op_type(operations.OpTypes.MEMORY)
             if self.line_data.form:
                 # address is an immediate
-                if self.line_data.form[2] == operations.ReplacementTokens.NUM:
-                    self.line_data.address_str = self.line_data.tokenized_line[2]
+                if self.line_data.form[3] == operations.ReplacementTokens.NUM:
+                    self.line_data.address_str = self.line_data.tokenized_line[3]
 
                 # address is a register
                 if self.line_data.form[2] == operations.ReplacementTokens.GPR:

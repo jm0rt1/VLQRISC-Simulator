@@ -36,7 +36,7 @@ class ALU():
         self.set_operands(a, b)
         string = ""
         for i, bit in enumerate(a.bits):
-            if bit == 1 and b.bits[i] == 1:
+            if bit == "1" and b.bits[i] == "1":
                 string += "1"
             else:
                 string += "0"
@@ -46,7 +46,7 @@ class ALU():
         self.set_operands(a, b)
         string = ""
         for i, bit in enumerate(a.bits):
-            if (bit == 1 and b.bits[i] == 1) or bit != b.bits[i]:
+            if (bit == "1" and b.bits[i] == "1") or bit != b.bits[i]:
                 string += "1"
             else:
                 string += "0"

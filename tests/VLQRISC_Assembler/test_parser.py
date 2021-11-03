@@ -107,21 +107,21 @@ class Scheme():
 passing_input_output_schemes = [
     # Scheme("J label")
     Scheme("lw $s2, 0", ["lw", "$s2", ",", "0"],
-           Operations.LOAD_WORD.value.syntax_tokens, None, None, "$s2", convert_reg_common_name_to_number(
+           Operations.LOAD_WORD.value.syntax_tokens, None, "0", "$s2", convert_reg_common_name_to_number(
         "$s2"),
         None, None, None, None,
         Operations.LOAD_WORD.value.op_code,
         Operations.LOAD_WORD.value.op_code_str,
         Operations.LOAD_WORD.value.type),
     Scheme("lw $s2, 0", ["lw", "$s2", ",", "0"],
-           Operations.LOAD_WORD.value.syntax_tokens, None, None, "$s2", convert_reg_common_name_to_number(
+           Operations.LOAD_WORD.value.syntax_tokens, None, "0", "$s2", convert_reg_common_name_to_number(
         "$s2"),
         None, None, None, None,
         Operations.LOAD_WORD.value.op_code,
         Operations.LOAD_WORD.value.op_code_str,
         Operations.LOAD_WORD.value.type),
-    Scheme("sw $s2, 0", ["sw", "$s2", ",", "0"],
-           Operations.STORE_WORD.value.syntax_tokens, None, None, "$s2", convert_reg_common_name_to_number(
+    Scheme("sw $s2, 4", ["sw", "$s2", ",", "4"],
+           Operations.STORE_WORD.value.syntax_tokens, None, "4", "$s2", convert_reg_common_name_to_number(
                "$s2"),
            None, None, None, None,
            Operations.STORE_WORD.value.op_code,
