@@ -95,7 +95,7 @@ class MMU():
 
     def STORE_WORD(self, address: FWI_unsigned, register: REGISTER):
         if address.int % 4 != 0:
-            Exception("Word addresses must be divisible by 4")
+            raise Exception("Word addresses must be divisible by 4")
         else:
             segments = [register.u[24:31], register.u[16:23],
                         register.u[8:15], register.u[0:7]]
@@ -103,7 +103,7 @@ class MMU():
 
     def LOAD_WORD(self, address: FWI_unsigned, register: REGISTER):
         if address.int % 4 != 0:
-            Exception("Word addresses must be divisible by 4")
+            raise Exception("Word addresses must be divisible by 4")
         else:
             row: list[FWI_unsigned] = self.memory_table[int(address.int/4)]
             bin_str = ""
@@ -111,6 +111,23 @@ class MMU():
                 bin_str += item.bits
 
             register.set_automatic(FWI_unsigned.from_binary_str(bin_str))
+
+    def LOAD_HALF_WORD_UNSIGNED(self, address: FWI_unsigned, register: REGISTER):
+        offset = address.int % 4
+        word_address = address.int//4
+
+        if offset == 3:
+            most_sig_byte = self.memory_table[word_address][offset]
+            least_sig_byte = self.memory_table[word_address + 1][offset]
+
+        else:
+            most_sig_byte = self.memory_table[word_address][offset]
+            least_sig_byte = self.memory_table[word_address][offset+1]
+
+        fwi = FWI_unsigned.from_binary_str(
+            most_sig_byte.bits + least_sig_byte.bits)
+        fwi_32 = FWI_unsigned.new_width(fwi, 32)
+        register.set_automatic(fwi_32)
 
 
 class REGISTER():
@@ -270,11 +287,14 @@ class VLQRISC_System():
             jump_address, self.register_table[hw_definitions.convert_reg_common_name_to_number("$pc")])
 
     def __MEMORY(self, instruction: Instruction, alu_op_s: Optional[signed_alu_op_callable] = None, alu_op_u: Optional[unsigned_alu_op_callable] = None, mmu_op: Optional[mmu_op_callable] = None):
-        address = instruction.segments[2]
-        register = self.register_table[instruction.segments[1].int]
+        address = instruction.segments[-1]
+        if instruction.segments[2].int != 0:
+            address_register: REGISTER = self.register_table[instruction.segments[2].int]
+            address += address_register.u
+        data_register = self.register_table[instruction.segments[1].int]
         if mmu_op:
             result = mmu_op(
-                self.mmu, address, register)
+                self.mmu, address, data_register)
 
 
 class OpTypeExecutionRegistration():
@@ -299,7 +319,7 @@ class Instruction():
         elif self.type == OpTypes.UNCOND_BRANCH:
             return [self.fwi[27:31], self.fwi[0: 15]]
         elif self.type == OpTypes.MEMORY:
-            return [self.fwi[27:31], self.fwi[23:26], self.fwi[0:15]]
+            return [self.fwi[27:31], self.fwi[23:26], self.fwi[19:22], self.fwi[0:15]]
         else:
             return [self.fwi]
 
@@ -404,9 +424,25 @@ class Operations(enum.Enum):
         ["j", ReplacementTokens.ADDRESS]], OpTypes.UNCOND_BRANCH, 0b01100)
 
     LOAD_WORD = Operation(
-        "LOAD_WORD", [["lw", ReplacementTokens.GPR, ReplacementTokens.NUM]], OpTypes.MEMORY, 0b01101, mmu_op=MMU.LOAD_WORD)
+        "LOAD_WORD", [["lw", ReplacementTokens.GPR, ",", ReplacementTokens.NUM], ["lw", ReplacementTokens.GPR, ",", ReplacementTokens.GPR]], OpTypes.MEMORY, 0b01101, mmu_op=MMU.LOAD_WORD)
+
     STORE_WORD = Operation("STORE_WORD", [
-                           ["sw", ReplacementTokens.GPR, ReplacementTokens.NUM]], OpTypes.MEMORY, 0b01110, mmu_op=MMU.STORE_WORD)
+                           ["sw", ReplacementTokens.GPR,
+                               ",", ReplacementTokens.NUM],
+                           ["sw", ReplacementTokens.GPR, ",",
+                               ReplacementTokens.GPR, "+", ReplacementTokens.NUM],
+                           ["sw", ReplacementTokens.GPR, ",", ReplacementTokens.GPR]], OpTypes.MEMORY, 0b01110, mmu_op=MMU.STORE_WORD)
+
+    LOAD_HALF_WORD_UNSIGNED = Operation(
+        "LOAD_HALF_WORD", [["lhu", ReplacementTokens.GPR, ",", ReplacementTokens.NUM],
+                           ["lhu", ReplacementTokens.GPR, ",", ReplacementTokens.GPR, "+", ReplacementTokens.NUM], ["lhu", ReplacementTokens.GPR, ",", ReplacementTokens.GPR]],
+        OpTypes.MEMORY, 0b01111, mmu_op=MMU.LOAD_HALF_WORD_UNSIGNED)
+
+    LOAD_BYTE_UNSIGNED = Operation(
+        "LOAD_HALF_WORD", [["lbu", ReplacementTokens.GPR, ",", ReplacementTokens.NUM],
+                           ["lbu", ReplacementTokens.GPR, ",", ReplacementTokens.GPR, "+", ReplacementTokens.NUM], [
+                               "lbu", ReplacementTokens.GPR, ",", ReplacementTokens.GPR]],
+        OpTypes.MEMORY, 0b10000, mmu_op=MMU.LOAD_WORD)
 
 
 operators: list[str] = []
