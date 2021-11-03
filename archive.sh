@@ -1,0 +1,1 @@
+git archive -o ../VLQRISC_Simulator.zip master
