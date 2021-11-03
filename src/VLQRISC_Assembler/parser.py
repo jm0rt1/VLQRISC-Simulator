@@ -22,10 +22,18 @@ class NoTypeSpecified(Exception):
 
 
 class LineParser():
+    """
+    Used to parse a single Line of VLQRISC Assembly
+
+    """
+
     def __init__(self, line: str):
         self.line = copy.copy(line)
 
     def parse(self):
+        """
+        Returns a LineData type that can be used to generate an instruction for the cpu
+        """
         self.line_data: LineData = LineData(self.__tokenize_line(self.line))
 
         self.line_data.form = self.__generate_standard_form()

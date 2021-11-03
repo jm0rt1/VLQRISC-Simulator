@@ -15,6 +15,10 @@ class OpTypeNotRecognized(Exception):
 
 
 class InstructionGenerator():
+    """
+    Instruction Generator -- Generates an instruction that can then be interpreted by the VLQRISC_System upon execution
+    """
+
     def __init__(self, line_data: parser.LineData) -> None:
         self.line_data = line_data
 
