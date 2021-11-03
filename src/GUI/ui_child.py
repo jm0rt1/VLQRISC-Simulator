@@ -98,6 +98,6 @@ class Ui_MainWindow_child(ui_base.Ui_MainWindow):
         if file.exists():
             with open(file, "r") as fp:
                 lines = fp.readlines()
-                return lines
+                return [line.strip() for line in lines]
         else:
             return []
