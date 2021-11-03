@@ -390,3 +390,123 @@ Traceback (most recent call last):
   File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 141, in __get_op_info
     raise InvalidOperationInput(f"invalid line of input {self.line}")
 src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input 
+invalid line of input 
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 141, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input 
+Fixed int passed in with fixed width integer exceeds limits
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 52, in get_operands_num_gpr
+    self.line_data.tokenized_line[2]), 19)
+ValueError: invalid literal for int() with base 10: '$s1'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 35, in parse
+    self.__parse_operands()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 120, in __parse_operands
+    get_operands_num_gpr()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 58, in get_operands_num_gpr
+    self.line_data.tokenized_line[4]), 19)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/Shared/fwi.py", line 158, in __init__
+    "Fixed int passed in with fixed width integer exceeds limits")
+src.Shared.fwi.FWIOverFlow: Fixed int passed in with fixed width integer exceeds limits
+invalid line of input sw $s1 4
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 141, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input sw $s1 4
+Labels input is not implemented
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    instruction = instruction_generator.generate()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 33, in generate
+    return self.__generate_MEMORY()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 71, in __generate_MEMORY
+    address = self.get_address()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 90, in get_address
+    raise NotImplementedError("Labels input is not implemented")
+NotImplementedError: Labels input is not implemented
+'InstructionGenerator' object has no attribute 'address_str'
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    instruction = instruction_generator.generate()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 33, in generate
+    return self.__generate_MEMORY()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 71, in __generate_MEMORY
+    address = self.get_address()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 81, in get_address
+    if self.address_str[0:2] == "0b":
+AttributeError: 'InstructionGenerator' object has no attribute 'address_str'
+'InstructionGenerator' object has no attribute 'address_str'
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    instruction = instruction_generator.generate()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 33, in generate
+    return self.__generate_MEMORY()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 71, in __generate_MEMORY
+    if self.address_str:
+AttributeError: 'InstructionGenerator' object has no attribute 'address_str'
+'InstructionGenerator' object has no attribute 'address_str'
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    instruction = instruction_generator.generate()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 33, in generate
+    return self.__generate_MEMORY()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 71, in __generate_MEMORY
+    if self.address_str:
+AttributeError: 'InstructionGenerator' object has no attribute 'address_str'
+Labels input is not implemented
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    instruction = instruction_generator.generate()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 39, in generate
+    return self.__generate_MEMORY()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 78, in __generate_MEMORY
+    address = self.get_address()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 103, in get_address
+    raise NotImplementedError("Labels input is not implemented")
+NotImplementedError: Labels input is not implemented
+Labels input is not implemented
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 51, in update
+    instruction = instruction_generator.generate()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 39, in generate
+    return self.__generate_MEMORY()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 78, in __generate_MEMORY
+    address = self.get_address()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/instructionGenerator.py", line 103, in get_address
+    raise NotImplementedError("Labels input is not implemented")
+NotImplementedError: Labels input is not implemented
+Word addresses must be divisible by 4
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 58, in update
+    self.system.execute(instruction)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 240, in execute
+    reg.to_execute(self, instruction, alu_op_s, alu_op_u, mmu_op)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 297, in __MEMORY
+    self.mmu, address, data_register)
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Simulator/system.py", line 98, in STORE_WORD
+    raise Exception("Word addresses must be divisible by 4")
+Exception: Word addresses must be divisible by 4
+invalid line of input sw $s0 + -4
+Traceback (most recent call last):
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/GUI/ui_child.py", line 44, in update
+    line_data = lp.parse()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 33, in parse
+    self.line_data.opcode_int, self.line_data.opcode_str, self.line_data.type = self.__get_op_info()
+  File "/Users/James/Library/Mobile Documents/com~apple~CloudDocs/James's Files/Education/Syracuse/Semesters/October 2021/CIS 655 - Advanced computer architecture/HW2/VLQRISC_Simulator/src/VLQRISC_Assembler/parser.py", line 154, in __get_op_info
+    raise InvalidOperationInput(f"invalid line of input {self.line}")
+src.VLQRISC_Assembler.parser.InvalidOperationInput: invalid line of input sw $s0 + -4
